@@ -14,14 +14,14 @@ import lombok.*;
 public class Departamento {
 	
 	@Id
-	private UUID id = UUID.randomUUID();
-	private String nombre;
-	
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "jefe", nullable = true)
-	private Empleado jefe;
-	
-	@OneToMany(mappedBy = "departamento", orphanRemoval = false, cascade = CascadeType.ALL)
+    private UUID id = UUID.randomUUID();
+    private String nombre;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "jefe_id", nullable = true)
+    private Empleado jefe;
+
+    @OneToMany(mappedBy = "departamento", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Empleado> empleados = new HashSet<>();
 	
 	public Departamento(UUID id) {
@@ -46,6 +46,16 @@ public class Departamento {
 		setId(id);
 		setNombre(nombre);
 		setJefe(jefe);
+	}
+	
+	@Override
+	public int hashCode() {
+	    final int prime = 31;
+	    int result = 1;
+	    result = prime * result + ((id == null) ? 0 : id.hashCode());
+	    result = prime * result + ((nombre == null) ? 0 : nombre.hashCode());
+	    // No incluir la referencia a empleados en el cálculo del hash
+	    return result;
 	}
 	
 	// TODO MOSTRAR LISTA DE EMPLEADOS ASOCIADOS A ESE DEPARTAMENTO

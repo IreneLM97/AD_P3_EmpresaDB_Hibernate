@@ -1,9 +1,13 @@
 package models;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.NamedQuery;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,8 +19,11 @@ import lombok.NoArgsConstructor;
 public class Proyecto {
 
 	@Id
-	private UUID id = UUID.randomUUID();
-	private String nombre;
+    private UUID id = UUID.randomUUID();
+    private String nombre;
+
+    @ManyToMany(mappedBy = "proyectos", cascade = CascadeType.ALL)
+    private Set<Empleado> empleados = new HashSet<>();
 	
 	public Proyecto(UUID id) {
 		setId(id);

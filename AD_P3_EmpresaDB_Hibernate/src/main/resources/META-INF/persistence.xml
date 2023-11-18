@@ -8,16 +8,17 @@
 			<property name="hibernate.show_sql" value="true" />
 			<property name="hibernate.format_sql" value="true" />
 			<!-- datos de conexión a la base de datos -->
-			<property name="jakarta.persistence.jdbc.url"	value="jdbc:mariadb://172.23.0.1:7706/hibernate_empresa_DB" />
+			<property name="jakarta.persistence.jdbc.url"	value="jdbc:mariadb://172.25.192.1:7706/hibernate_empresa_DB" />
 			<property name="jakarta.persistence.jdbc.driver" value="org.mariadb.jdbc.Driver" />
 			<property name="jakarta.persistence.jdbc.user" value="root" />
 			<property name="jakarta.persistence.jdbc.password" value="toor" />
-			<!-- inicialización de datos de la base de datos -->
+			<!-- inicialización de datos de la base de datos 
 			<property name="jakarta.persistence.schema-generation.database.action" value="update" />
 			<property name="jakarta.persistence.schema-generation.create-source" value="script" />
 			<property name="jakarta.persistence.schema-generation.drop-source" value="script" />
 			<property name="jakarta.persistence.schema-generation.create-script-source" value="META-INF/sql/create.sql" />
-			<property name="jakarta.persistence.schema-generation.drop-script-source" value="META-INF/sql/drop.sql" />
+			<property name="jakarta.persistence.schema-generation.drop-script-source" value="META-INF/sql/drop.sql" />-->
+			<property name="hibernate.hbm2ddl.auto" value="update" />
 
  		</properties>
 	</persistence-unit>

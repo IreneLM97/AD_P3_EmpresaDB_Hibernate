@@ -1,12 +1,13 @@
 package models;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 //import org.hibernate.annotations.UuidGenerator;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,13 +17,28 @@ import lombok.*;
 public class Empleado {
 	
 	@Id
-	private UUID id = UUID.randomUUID();
-	private String nombre;
-	private Double salario;
+    private UUID id = UUID.randomUUID();
+    private String nombre;
+    private Double salario;
+
+    @ManyToOne
+    @JoinColumn(name = "departamento_id", nullable = true)
+    private Departamento departamento;
+
+    @ManyToMany
+    @JoinTable(
+        name = "empleado_proyecto",
+        joinColumns = @JoinColumn(name = "empleado_id"),
+        inverseJoinColumns = @JoinColumn(name = "proyecto_id")
+    )
+    private Set<Proyecto> proyectos = new HashSet<>();
 	
-	@ManyToOne
-	@JoinColumn(name="departamento", nullable = true)
-	private Departamento departamento;
+	public Empleado(UUID id, String nombre, Double salario, Departamento departamento) {
+		setId(id);
+		setNombre(nombre);
+		setSalario(salario);
+		setDepartamento(departamento);
+	}
 	
 	public Empleado(String nombre, Double salario, Departamento departamento) {
 		setNombre(nombre);
@@ -37,6 +53,17 @@ public class Empleado {
 	
 	public Empleado(UUID id) {
 		setId(id);
+	}
+	
+	@Override
+	public int hashCode() {
+	    final int prime = 31;
+	    int result = 1;
+	    result = prime * result + ((id == null) ? 0 : id.hashCode());
+	    result = prime * result + ((nombre == null) ? 0 : nombre.hashCode());
+	    result = prime * result + ((salario == null) ? 0 : salario.hashCode());
+	    // No incluir la referencia a proyectos y departamento en el cálculo del hash
+	    return result;
 	}
 	
 	@Override

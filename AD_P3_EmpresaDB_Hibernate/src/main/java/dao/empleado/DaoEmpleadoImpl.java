@@ -1,6 +1,7 @@
 package dao.empleado;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import dao.departamento.DaoDepartamentoImpl;
@@ -11,6 +12,25 @@ import models.Empleado;
 
 public class DaoEmpleadoImpl implements DaoEmpleado{
 	private final Logger logger = Logger.getLogger(DaoDepartamentoImpl.class.getName());
+	
+	public Empleado getEmpleadoById(UUID id) {
+	    logger.info("getEmpleadoById()");
+	    HibernateManager hb = HibernateManager.getInstance();
+	    hb.open();
+	    try {
+	        return hb.getManager().find(Empleado.class, id);
+
+	    } catch (Exception e) {
+	        // Manejar la excepción según tus necesidades
+	        logger.warning("Error al obtener Empleado por ID: " + id + " - " + e.getMessage());
+	        return null;
+
+	    } finally {
+	        hb.close();
+	    }
+	}
+
+	
 	@Override
 	public List<Empleado> listar() {
 		logger.info("findAll()");

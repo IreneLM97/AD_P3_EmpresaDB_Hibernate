@@ -17,11 +17,12 @@ public class Departamento {
     private UUID id = UUID.randomUUID();
     private String nombre;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    //IMPORTANTE NO AÑADIR EL DELETE CASCADE PARA NO ELIMINAR LOS REGISTROS RELACIONADOS CUANDO SE HAGA UN DELETE!!
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "jefe_id", nullable = true)
     private Empleado jefe;
 
-    @OneToMany(mappedBy = "departamento", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(mappedBy = "departamento", orphanRemoval = false, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     private Set<Empleado> empleados = new HashSet<>();
 	
 	public Departamento(UUID id) {

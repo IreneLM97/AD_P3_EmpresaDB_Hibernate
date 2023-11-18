@@ -1,6 +1,7 @@
 package dao.departamento;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import db.HibernateManager;
@@ -11,6 +12,23 @@ import models.Empleado;
 
 public class DaoDepartamentoImpl implements DaoDepartamento{
 	private final Logger logger = Logger.getLogger(DaoDepartamentoImpl.class.getName());
+	
+	public Departamento getDepartamentoById(UUID id) {
+	    logger.info("getEmpleadoById()");
+	    HibernateManager hb = HibernateManager.getInstance();
+	    hb.open();
+	    try {
+	        return hb.getManager().find(Departamento.class, id);
+
+	    } catch (Exception e) {
+	        // Manejar la excepción según tus necesidades
+	        logger.warning("Error al obtener Departamento por ID: " + id + " - " + e.getMessage());
+	        return null;
+
+	    } finally {
+	        hb.close();
+	    }
+	}
 	
 	@Override
 	public List<Departamento> listar() {
@@ -78,7 +96,7 @@ public class DaoDepartamentoImpl implements DaoDepartamento{
             hb.close();
             return true;
         } catch (Exception e) {
-            throw new DepartamentoException("Error al eliminar tenista con uuid: " + entity.getId() + " - " + e.getMessage());
+            throw new DepartamentoException("Error al eliminar Departamento con uuid: " + entity.getId() + " - " + e.getMessage());
         } finally {
             if (hb.getTransaction().isActive()) {
                 hb.getTransaction().rollback();

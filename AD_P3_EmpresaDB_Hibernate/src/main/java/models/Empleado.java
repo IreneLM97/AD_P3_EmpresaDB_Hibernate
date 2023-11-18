@@ -21,7 +21,7 @@ public class Empleado {
     private String nombre;
     private Double salario;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "departamento_id", nullable = true)
     private Departamento departamento;
 
@@ -49,6 +49,11 @@ public class Empleado {
 	public Empleado(UUID id, String nombre) {
 		setId(id);
 		setNombre(nombre);
+	}
+	
+	public Empleado(UUID id, Departamento departamento) {
+		setId(id);
+		setDepartamento(departamento);
 	}
 	
 	public Empleado(UUID id) {

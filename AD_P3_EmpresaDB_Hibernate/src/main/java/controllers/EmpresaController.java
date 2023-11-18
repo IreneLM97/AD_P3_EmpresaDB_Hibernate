@@ -8,6 +8,7 @@ import dao.empleado.DaoEmpleado;
 import dao.proyecto.DaoProyecto;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 public class EmpresaController {
@@ -26,6 +27,11 @@ public class EmpresaController {
     }
     
  // ======================================| DEPARTAMENTO |====================================== 
+    public Departamento getDepartamentoById(UUID id) {
+        logger.info("Obteniendo Empleado por ID: " + id);
+        return departamentoDao.getDepartamentoById(id);
+    }
+    
     public List<Departamento> getDepartamentos() {
         logger.info("Obteniendo Departamento");
         return departamentoDao.listar();
@@ -48,6 +54,12 @@ public class EmpresaController {
     // ==========================================================================================
 
     // ======================================| EMPLEADO |======================================   
+    public Empleado getEmpleadoById(UUID id) {
+        logger.info("Obteniendo Empleado por ID: " + id);
+        return empleadoDao.getEmpleadoById(id);
+    }
+
+    
     public List<Empleado> getEmpleados() {
         logger.info("Obteniendo Empleados");
         return empleadoDao.listar();

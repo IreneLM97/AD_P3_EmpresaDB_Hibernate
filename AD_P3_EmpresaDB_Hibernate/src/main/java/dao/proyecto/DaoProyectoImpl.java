@@ -71,4 +71,10 @@ public class DaoProyectoImpl implements DaoProyecto{
         }
 	}
 
+	@Override
+	public Proyecto getProyectoById(UUID id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

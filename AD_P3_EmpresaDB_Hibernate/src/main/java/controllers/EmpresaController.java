@@ -28,77 +28,76 @@ public class EmpresaController {
     
  // ======================================| DEPARTAMENTO |====================================== 
     public Departamento getDepartamentoById(UUID id) {
-        logger.info("Obteniendo Empleado por ID: " + id);
+        logger.info("Obteniendo departamento por ID: " + id);
         return departamentoDao.getDepartamentoById(id);
     }
     
     public List<Departamento> getDepartamentos() {
-        logger.info("Obteniendo Departamento");
+        logger.info("Obteniendo departamentos");
         return departamentoDao.listar();
     }
 
     public Boolean createDepartamento(Departamento departamento) {
-        logger.info("Creando Departamento");
+        logger.info("Creando departamento");
         return departamentoDao.save(departamento);
     }
 
     public Boolean updateDepartamento(Departamento departamento) {
-        logger.info("Actualizando Departamento con uuid: " + departamento.getId());
+        logger.info("Actualizando departamento con ID: " + departamento.getId());
         return departamentoDao.save(departamento);
     }
 
     public Boolean deleteDepartamento(Departamento departamento) {
-        logger.info("Eliminando Departamento con uuid: " + departamento.getId());
+        logger.info("Eliminando departamento con ID: " + departamento.getId());
         return departamentoDao.delete(departamento);
     }
     // ==========================================================================================
 
     // ======================================| EMPLEADO |======================================   
     public Empleado getEmpleadoById(UUID id) {
-        logger.info("Obteniendo Empleado por ID: " + id);
+        logger.info("Obteniendo empleado por ID: " + id);
         return empleadoDao.getEmpleadoById(id);
     }
 
-    
     public List<Empleado> getEmpleados() {
-        logger.info("Obteniendo Empleados");
+        logger.info("Obteniendo empleados");
         return empleadoDao.listar();
     }
 
     public Boolean createEmpleado(Empleado empleado) {
-        logger.info("Creando Empleados");
+        logger.info("Creando empleado");
         return empleadoDao.save(empleado);
     }
 
     public Boolean updateEmpleado(Empleado empleado) {
-        logger.info("Actualizando Empleados con uuid: " + empleado.getId());
+        logger.info("Actualizando empleado con ID: " + empleado.getId());
         return empleadoDao.save(empleado);
     }
 
     public Boolean deleteEmpleado(Empleado empleado) {
-        logger.info("Eliminando Empleados con uuid: " + empleado.getId());
+        logger.info("Eliminando empleado con ID: " + empleado.getId());
         return empleadoDao.delete(empleado);
     }
  // ==========================================================================================
 
  // ======================================| PROYECTO |======================================
     public List<Proyecto> getProyectos() {
-        logger.info("Obteniendo Proyectos");
+        logger.info("Obteniendo proyectos");
         return proyectoDao.listar();
     }
 
     public Boolean createProyecto(Proyecto proyecto) {
-        logger.info("Creando Raqueta");
+        logger.info("Creando proyecto");
         return proyectoDao.save(proyecto);
     }
 
     public Boolean updateProyecto(Proyecto proyecto) {
-        logger.info("Actualizando Raqueta con uuid: " + proyecto.getId());
+        logger.info("Actualizando proyecto con ID: " + proyecto.getId());
         return proyectoDao.save(proyecto);
     }
 
     public Boolean deleteProyecto(Proyecto proyecto) {
-        logger.info("Eliminando Raqueta con uuid: " + proyecto.getId());
+        logger.info("Eliminando proyecto con ID: " + proyecto.getId());
         return proyectoDao.delete(proyecto);
     }
 // ==========================================================================================

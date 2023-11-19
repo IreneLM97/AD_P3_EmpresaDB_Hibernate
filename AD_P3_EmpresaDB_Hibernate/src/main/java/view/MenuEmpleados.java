@@ -62,11 +62,11 @@ public class MenuEmpleados {
 	private static void insertEmpleado(EmpresaController controller) {
 		// Obtenemos los datos del departamento que se quiere insertar
 				String nombre = IO.readString("Nombre ? ");
-				Double salario = IO.readDoubleOptional("Salario?: ");
+				Double salario = IO.readDoubleOptional("Salario? ");
 				UUID departamento = IO.readUUIDOptional("Departamento ? ");
 
 				// Creamos el departamento y lo insertamos
-				Empleado empleado = new Empleado(nombre, salario, new Departamento(departamento));
+				Empleado empleado = new Empleado(nombre, salario, controller.getDepartamentoById(departamento));
 						
 				// Comprobamos si se ha insertado el registro y damos feedback
 				IO.println(controller.createEmpleado(empleado) ? "Insertado correctamente" :

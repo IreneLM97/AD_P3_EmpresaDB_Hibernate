@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.NamedQuery;
@@ -22,7 +23,7 @@ public class Proyecto {
     private UUID id = UUID.randomUUID();
     private String nombre;
 
-    @ManyToMany(mappedBy = "proyectos", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "proyectos", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     private Set<Empleado> empleados = new HashSet<>();
 	
 	public Proyecto(UUID id) {

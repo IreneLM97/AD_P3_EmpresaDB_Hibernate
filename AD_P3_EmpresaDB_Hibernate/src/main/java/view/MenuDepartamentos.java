@@ -8,8 +8,8 @@ import java.util.stream.Collectors;
 import IO.IO;
 import constantes.color.Colores;
 import controllers.EmpresaController;
-import models.Empleado;
 import models.Departamento;
+import models.Empleado;
 
 public class MenuDepartamentos {
 	public static void mostrarMenu(EmpresaController controller) {
@@ -65,7 +65,6 @@ public class MenuDepartamentos {
 	        List<String> empleados = departamento.getEmpleados().stream()
 	                .map(empleado -> controller.getEmpleadoById(empleado.getId()).getNombre())
 	                .collect(Collectors.toList());
-
 	        System.out.println(String.format(format,
 	                departamento.getId(),
 	                departamento.getNombre(),
@@ -73,10 +72,6 @@ public class MenuDepartamentos {
 	                String.join(", ", empleados)));
 	    });
 	}
-
-
-
-
 
 	/**
 	 * Método para solicitar campos de un departamento e insertarlo en la base de datos.
@@ -89,12 +84,13 @@ public class MenuDepartamentos {
 		UUID jefe = IO.readUUIDOptional("Jefe ? ");
 
 		// Creamos el departamento y lo insertamos
-		Departamento departamento = new Departamento(nombre, new Empleado(jefe));
+		Departamento departamento = new Departamento(nombre);
+		if(jefe != null) departamento.setJefe(controller.getEmpleadoById(jefe));
 				
 		// Comprobamos si se ha insertado el registro y damos feedback
 		IO.println(controller.createDepartamento(departamento) ? "Insertado correctamente" :
 				Colores.ROJO 
-				+ "No se ha encontrado un empleado con el ID introducido" 
+				+ "No se ha podido insertar el departamento" 
 				+ Colores.RESET);
 	}
 
@@ -104,31 +100,25 @@ public class MenuDepartamentos {
 	 * @param controller
 	 */
 	private static void updateDepartamento(EmpresaController controller) {
-	    IO.print("ID ? ");
-	    UUID id = IO.readUUID();
-	    Departamento departamentoActual = controller.getDepartamentoById(id);
+		// Obtenemos departamento que se quiere actualizar
+	    UUID id = IO.readUUID("ID ? ");
+	    Departamento departamento = controller.getDepartamentoById(id);
 
-	    if (departamentoActual != null) {
+	    // Comprobamos si existe ese departamento
+	    if (departamento != null) {
 	        String nombre = IO.readStringOptional("Nombre ? ");
-	        nombre = (nombre == null || nombre.trim().isEmpty()) ? departamentoActual.getNombre() : nombre;
+	        nombre = (nombre.isEmpty()) ? departamento.getNombre() : nombre;
 
-	        UUID nuevoJefe = IO.readUUIDOptional("Jefe ? ");
-
-	        // Si el departamento actual tiene un jefe, establece el departamento a null en la tabla de empleados
-	        Empleado jefeActual = departamentoActual.getJefe();
-	        if (jefeActual != null) {
-	            jefeActual.setDepartamento(null);
-	            controller.updateEmpleado(jefeActual);
-	        }
+	        UUID jefe = IO.readUUIDOptional("Jefe ? ");
+	        jefe = (jefe == null) ? departamento.getJefe().getId() : jefe;
 
 	        // Realiza la actualización del departamento
-	        boolean actualizado = controller.updateDepartamento(new Departamento(id, nombre, new Empleado(nuevoJefe)));
+	        boolean actualizado = controller.updateDepartamento(new Departamento(id, nombre, controller.getEmpleadoById(jefe)));
 
 	        IO.println(actualizado ? "Actualizado correctamente" : Colores.ROJO +
-	                "\nRegistro no encontrado o Información no válida\n" +
+	                "\nInformación no válida\n" +
 	                "Asegúrese de:\n" +
 	                "- Haber rellenado al menos 1 campo\n" +
-	                "- Que el ID del departamento a modificar exista en la tabla departamento\n" +
 	                "- Que el ID del jefe exista en la tabla empleado" +
 	                Colores.RESET);
 	    } else {
@@ -136,38 +126,24 @@ public class MenuDepartamentos {
 	    }
 	}
 
-
-
-
 	/**
-	 * Método para solicitar campos de un departamento y eliminarlo en la base de datos.
+	 * Método para solicitar un departamento y eliminarlo en la base de datos.
 	 * 
 	 * @param controller
 	 */
 	private static void deleteDepartamento(EmpresaController controller) {
-	    UUID idDepartamento = IO.readUUID("ID Departamento ? ");
+	    UUID id = IO.readUUID("ID ? ");
 
 	    // Obtener el departamento a eliminar
-	    Departamento departamento = controller.getDepartamentoById(idDepartamento);
-
-	    if (departamento != null) {
-	        // Establecer el departamento a null para los empleados y actualizar en la base de datos
-	        departamento.getEmpleados().forEach(empleado -> {
-	            empleado.setDepartamento(null);
-	            controller.updateEmpleado(empleado);
-	        });
-
-	        // Eliminar el departamento
+	    Departamento departamento = controller.getDepartamentoById(id);
+	    
+	    if (departamento != null) {  // departamento existe
 	        boolean eliminado = controller.deleteDepartamento(departamento);
-
 	        IO.println(eliminado ? "Departamento eliminado correctamente" :
 	                Colores.ROJO + "No se ha podido eliminar el departamento" + Colores.RESET);
-	    } else {
+	        
+	    } else {  // departamento no existe
 	        IO.println(Colores.ROJO + "No se ha encontrado un departamento con el ID introducido" + Colores.RESET);
 	    }
 	}
-
-
-
-
 }

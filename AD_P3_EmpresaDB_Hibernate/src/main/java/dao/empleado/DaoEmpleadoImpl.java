@@ -6,11 +6,13 @@ import java.util.logging.Logger;
 
 import dao.departamento.DaoDepartamentoImpl;
 import db.HibernateManager;
+import exceptions.DepartamentoException;
 import exceptions.EmpleadoException;
 import jakarta.persistence.TypedQuery;
+import models.Departamento;
 import models.Empleado;
 
-public class DaoEmpleadoImpl implements DaoEmpleado{
+public class DaoEmpleadoImpl implements DaoEmpleado {
 	private final Logger logger = Logger.getLogger(DaoDepartamentoImpl.class.getName());
 	
 	public Empleado getEmpleadoById(UUID id) {
@@ -19,18 +21,14 @@ public class DaoEmpleadoImpl implements DaoEmpleado{
 	    hb.open();
 	    try {
 	        return hb.getManager().find(Empleado.class, id);
-
 	    } catch (Exception e) {
-	        // Manejar la excepción según tus necesidades
-	        logger.warning("Error al obtener Empleado por ID: " + id + " - " + e.getMessage());
-	        return null;
-
+	    	logger.warning("No se encontró empleado con ID: " + id);
+	    	return null;
 	    } finally {
 	        hb.close();
 	    }
 	}
 
-	
 	@Override
 	public List<Empleado> listar() {
 		logger.info("findAll()");

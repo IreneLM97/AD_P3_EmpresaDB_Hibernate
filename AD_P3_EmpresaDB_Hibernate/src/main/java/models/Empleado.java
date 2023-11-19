@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,11 +22,11 @@ public class Empleado {
     private String nombre;
     private Double salario;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinColumn(name = "departamento_id", nullable = true)
     private Departamento departamento;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinTable(
         name = "empleado_proyecto",
         joinColumns = @JoinColumn(name = "empleado_id"),

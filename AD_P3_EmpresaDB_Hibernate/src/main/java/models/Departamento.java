@@ -17,14 +17,14 @@ public class Departamento {
     private UUID id = UUID.randomUUID();
     private String nombre;
 
-    //IMPORTANTE NO AÑADIR EL DELETE CASCADE PARA NO ELIMINAR LOS REGISTROS RELACIONADOS CUANDO SE HAGA UN DELETE!!
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinColumn(name = "jefe_id", nullable = true)
     private Empleado jefe;
 
     @OneToMany(mappedBy = "departamento", orphanRemoval = false, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     private Set<Empleado> empleados = new HashSet<>();
 	
+    // TODO INTENTAR OPTIMIZAR CONSTRUCTORES CON BUILDER
 	public Departamento(UUID id) {
 		setId(id);
 	}
@@ -47,6 +47,11 @@ public class Departamento {
 		setId(id);
 		setNombre(nombre);
 		setJefe(jefe);
+	}
+	
+	@PreRemove
+	public void nullificarEmpleados() {
+		empleados.forEach(empleado -> empleado.setDepartamento(null));
 	}
 	
 	@Override

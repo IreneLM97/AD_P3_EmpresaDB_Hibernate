@@ -72,30 +72,6 @@ public class DaoDepartamentoImpl implements DaoDepartamento {
         		jefe.setDepartamento(entity);
         		hb.getManager().merge(jefe);
         	}
-        	
-        	/*
-        	Empleado jefe = entity.getJefe();
-
-            // Si hay un jefe y ya está asociado a otro departamento, eliminamos la relación
-            if (jefe != null) {
-                Departamento departamentoJefe = jefe.getDepartamento();
-                if (departamentoJefe != null && !departamentoJefe.getId().equals(entity.getId())) {
-                    departamentoJefe.setJefe(null);
-                    hb.getManager().merge(departamentoJefe);
-                }
-
-                // Seteamos el nuevo departamento al empleado (nuevo jefe)
-                jefe.setDepartamento(entity);
-                hb.getManager().merge(jefe);
-            }
-
-            // Seteamos el jefe al departamento que estamos guardando
-            entity.setJefe(jefe);
-
-            // Guardamos o actualizamos el departamento
-            hb.getManager().merge(entity);
-            */
-
             hb.getTransaction().commit();
             hb.close();
             return true;
@@ -153,3 +129,28 @@ public class DaoDepartamentoImpl implements DaoDepartamento {
 //  jefeActualizado.setDepartamento(mergedDepartamento);
 //  hb.getManager().merge(jefeActualizado);  // Merge del Empleado
 //}
+
+
+/*
+Empleado jefe = entity.getJefe();
+
+// Si hay un jefe y ya está asociado a otro departamento, eliminamos la relación
+if (jefe != null) {
+    Departamento departamentoJefe = jefe.getDepartamento();
+    if (departamentoJefe != null && !departamentoJefe.getId().equals(entity.getId())) {
+        departamentoJefe.setJefe(null);
+        hb.getManager().merge(departamentoJefe);
+    }
+
+    // Seteamos el nuevo departamento al empleado (nuevo jefe)
+    jefe.setDepartamento(entity);
+    hb.getManager().merge(jefe);
+}
+
+// Seteamos el jefe al departamento que estamos guardando
+entity.setJefe(jefe);
+
+// Guardamos o actualizamos el departamento
+hb.getManager().merge(entity);
+*/
+

@@ -9,9 +9,9 @@ import models.Proyecto;
 public final class DataDB {
     public static List<Departamento> getDepartamentoInit() {
         return List.of(
-        		new Departamento("Informatica", new Empleado(null)),
-                new Departamento("Administracion", new Empleado(null)),
-                new Departamento("Recursos Humanos", new Empleado(null))
+        		new Departamento("Informatica"),
+                new Departamento("Administracion"),
+                new Departamento("Recursos Humanos")
         );
     }
     

@@ -9,7 +9,6 @@ import IO.IO;
 import constantes.color.Colores;
 import controllers.EmpresaController;
 import models.Departamento;
-import models.Empleado;
 
 public class MenuDepartamentos {
 	public static void mostrarMenu(EmpresaController controller) {
@@ -83,6 +82,11 @@ public class MenuDepartamentos {
 		String nombre = IO.readString("Nombre ? ");
 		UUID jefe = IO.readUUIDOptional("Jefe ? ");
 
+		if (jefe != null && controller.getEmpleadoById(jefe) == null) {
+			System.out.println(Colores.ROJO + "No se ha podido insertar el departamento, el jefe con ID: " + jefe + "No existe en la tabla EMPLEADOS" + Colores.ROJO + Colores.RESET);
+			return;
+		}
+		
 		// Creamos el departamento y lo insertamos
 		Departamento departamento = new Departamento(nombre);
 		if(jefe != null) departamento.setJefe(controller.getEmpleadoById(jefe));

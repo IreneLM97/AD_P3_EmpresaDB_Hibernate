@@ -40,6 +40,7 @@ public class DaoEmpleadoImpl implements DaoEmpleado {
         return list;
 	}
 
+	// TODO AL ACTUALIZAR DUPLICA
 	@Override
 	public Boolean save(Empleado entity) {
 		logger.info("save()");

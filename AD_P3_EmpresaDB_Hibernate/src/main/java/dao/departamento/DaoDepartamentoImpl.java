@@ -1,4 +1,4 @@
-package dao.departamento;
+ package dao.departamento;
 
 import java.util.List;
 import java.util.UUID;
@@ -47,31 +47,33 @@ public class DaoDepartamentoImpl implements DaoDepartamento {
         hb.getTransaction().begin();
         
         try {
-            // No se introduce jefe al departamento
-        	if(entity.getJefe() == null) {
-        		hb.getManager().merge(entity);
-        		
-        	// Se introduce jefe al departamento
-        	} else {
-        		// Obtenemos el jefe
-        		Empleado jefe = hb.getManager().find(Empleado.class, entity.getJefe().getId());
-        		
-        		// Actualizamos el departamento que tuviese a ese jefe y le ponemos a null
-        		TypedQuery<Departamento> query = hb.getManager().createQuery("SELECT d FROM departamento d WHERE d.jefe.id = :jefe_id", Departamento.class);
-        		query.setParameter("jefe_id", jefe.getId());
-        		query.getResultList().stream().forEach(departamento -> {
-        		    departamento.setJefe(null);
-        		    hb.getManager().merge(departamento);
-        		});
-        		
-        		// Actualizamos el jefe en el departamento
-        		entity.setJefe(jefe);
-        		hb.getManager().merge(entity);
-        		
-        		// Actualizamos el departamento en el jefe
-        		jefe.setDepartamento(entity);
-        		hb.getManager().merge(jefe);
-        	}
+        	if (entity.getJefe() != null) {
+                // Obtener el jefe actual del departamento
+                Empleado nuevoJefe = hb.getManager().find(Empleado.class, entity.getJefe().getId());
+                hb.getManager().detach(nuevoJefe);
+
+                // Buscar los departamentos actuales del nuevo jefe y establecer su jefe a null
+                TypedQuery<Departamento> query = hb.getManager().createQuery(
+                        "SELECT d FROM departamento d WHERE d.jefe.id = :jefe_id", Departamento.class);
+                query.setParameter("jefe_id", nuevoJefe.getId());
+
+                List<Departamento> departamentosDelJefe = query.getResultList();
+                for (Departamento dept : departamentosDelJefe) {
+                    dept.setJefe(null);
+                    hb.getManager().merge(dept);
+                }
+
+                // Actualizar el departamento del jefe con el nuevo departamento
+                nuevoJefe.setDepartamento(entity);
+                hb.getManager().merge(nuevoJefe);
+
+                // Establecer el jefe del departamento
+                entity.setJefe(nuevoJefe);
+            }
+
+            // Guardar o actualizar el departamento
+            hb.getManager().merge(entity);
+
             hb.getTransaction().commit();
             hb.close();
             return true;

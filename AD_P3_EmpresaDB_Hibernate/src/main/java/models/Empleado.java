@@ -1,5 +1,6 @@
 package models;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -21,6 +22,7 @@ public class Empleado {
     private UUID id = UUID.randomUUID();
     private String nombre;
     private Double salario;
+    private LocalDate nacido;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinColumn(name = "departamento_id", nullable = true)
@@ -47,6 +49,24 @@ public class Empleado {
 		setDepartamento(departamento);
 	}
 	
+	public Empleado(String nombre, Double salario) {
+		setNombre(nombre);
+		setSalario(salario);
+	}
+	
+	public Empleado(String nombre, Double salario, LocalDate nacido) {
+		setNombre(nombre);
+		setSalario(salario);
+		setNacido(nacido);
+	}
+	
+	public Empleado(String nombre, Double salario, LocalDate nacido, Departamento departamento) {
+		setNombre(nombre);
+		setSalario(salario);
+		setNacido(nacido);
+		setDepartamento(departamento);
+	}
+	
 	public Empleado(UUID id, String nombre) {
 		setId(id);
 		setNombre(nombre);
@@ -68,15 +88,15 @@ public class Empleado {
 	    result = prime * result + ((id == null) ? 0 : id.hashCode());
 	    result = prime * result + ((nombre == null) ? 0 : nombre.hashCode());
 	    result = prime * result + ((salario == null) ? 0 : salario.hashCode());
+	    result = prime * result + ((nacido == null) ? 0 : nacido.hashCode());
 	    // No incluir la referencia a proyectos y departamento en el cálculo del hash
 	    return result;
 	}
 	
 	@Override
 	public String toString() {
-		String format = "[ %-36s ][ %-20s ][ %-8s ][ %-55s ]";
-		String salarioStr = (salario != null) ? Double.toString(this.salario) : "N/A";
+		String format = "[ %-36s ][ %-20s ][ %-8s ][ %-12s ][ %-55s ]";
 		String departamentoInfo = (departamento != null) ? departamento.getId() + " | " + departamento.getNombre() : "N/A";
-	    return String.format(format, this.id.toString(), this.nombre, salarioStr, departamentoInfo);
+	    return String.format(format, this.id.toString(), this.nombre, salario, nacido, departamentoInfo);
 	}
 }

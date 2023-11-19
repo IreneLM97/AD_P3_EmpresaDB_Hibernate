@@ -82,8 +82,9 @@ public class MenuDepartamentos {
 		String nombre = IO.readString("Nombre ? ");
 		UUID jefe = IO.readUUIDOptional("Jefe ? ");
 
+		// Comprobamos si existe el jefe
 		if (jefe != null && controller.getEmpleadoById(jefe) == null) {
-			System.out.println(Colores.ROJO + "No se ha podido insertar el departamento, el jefe con ID: " + jefe + "No existe en la tabla EMPLEADOS" + Colores.ROJO + Colores.RESET);
+			System.out.println(Colores.ROJO + "No se ha podido insertar el departamento, el jefe con ID: " + jefe + " no existe en la tabla EMPLEADOS" + Colores.ROJO + Colores.RESET);
 			return;
 		}
 		
@@ -115,8 +116,14 @@ public class MenuDepartamentos {
 
 	        UUID jefe = IO.readUUIDOptional("Jefe ? ");
 	        jefe = (jefe == null) ? departamento.getJefe().getId() : jefe;
+	        
+	        // Comprobamos si existe el jefe
+			if (jefe != null && controller.getEmpleadoById(jefe) == null) {
+				System.out.println(Colores.ROJO + "No se ha podido actualizar el departamento, el jefe con ID: " + jefe + " no existe en la tabla EMPLEADOS" + Colores.ROJO + Colores.RESET);
+				return;
+			}
 
-	        // Realiza la actualización del departamento
+	        // Realizamos la actualización del departamento
 	        boolean actualizado = controller.updateDepartamento(new Departamento(id, nombre, controller.getEmpleadoById(jefe)));
 
 	        IO.println(actualizado ? "Actualizado correctamente" : Colores.ROJO +
@@ -136,17 +143,17 @@ public class MenuDepartamentos {
 	 * @param controller
 	 */
 	private static void deleteDepartamento(EmpresaController controller) {
+		// Obtener el departamento a eliminar
 	    UUID id = IO.readUUID("ID ? ");
-
-	    // Obtener el departamento a eliminar
 	    Departamento departamento = controller.getDepartamentoById(id);
 	    
-	    if (departamento != null) {  // departamento existe
+	    // departamento existe
+	    if (departamento != null) {  
 	        boolean eliminado = controller.deleteDepartamento(departamento);
 	        IO.println(eliminado ? "Departamento eliminado correctamente" :
 	                Colores.ROJO + "No se ha podido eliminar el departamento" + Colores.RESET);
-	        
-	    } else {  // departamento no existe
+	    // departamento no existe   
+	    } else {  
 	        IO.println(Colores.ROJO + "No se ha encontrado un departamento con el ID introducido" + Colores.RESET);
 	    }
 	}

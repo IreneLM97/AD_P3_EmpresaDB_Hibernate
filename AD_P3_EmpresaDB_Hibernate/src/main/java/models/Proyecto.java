@@ -1,9 +1,10 @@
 package models;
 
 import java.util.HashSet;
-import java.util.Objects;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -42,13 +43,24 @@ public class Proyecto {
 	
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, nombre, empleados);
+		final int prime = 31;
+	    int result = 1;
+	    result = prime * result + ((id == null) ? 0 : id.hashCode());
+	    result = prime * result + ((nombre == null) ? 0 : nombre.hashCode());
+	    result = prime * result + ((empleados == null) ? 0 : empleados.hashCode());
+	    return result;
 	}
 	
 	@Override
 	public String toString() {
-	    String format = "[ %-36s ][ %-20s ]";
-		return String.format(format, this.id.toString(), this.nombre);
+	    String format = "[ %-36s ][ %-20s ][ %-55s ]";
+	    
+	    List<String> empleadosList = this.empleados.stream()
+	            .map(empleado -> empleado.getNombre())
+	            .collect(Collectors.toList());
+	    String empleadosInfo = String.join(", ", empleadosList);
+	    
+		return String.format(format, this.id.toString(), this.nombre, empleadosInfo);
 	}
 	
 	/**

@@ -12,6 +12,7 @@ import controllers.EmpresaController;
 import models.Departamento;
 import models.Empleado;
 
+// TODO AÑADIR OPCIONES DE ANADIR A PROYECTO O ETC
 public class MenuEmpleados {
 	public static void mostrarMenu(EmpresaController controller) {
 
@@ -59,7 +60,7 @@ public class MenuEmpleados {
 		List<Empleado> empleados = controller.getEmpleados().stream()
                 .sorted(Comparator.comparing(Empleado::getNombre))
                 .collect(Collectors.toList());
-		// Mostramos todos los empleados
+		// Mostramos todos los empleados y sus proyectos
 		String format = "[ %-36s ][ %-20s ][ %-8s ][ %-12s ][ %-55s ][ %-55s ]";
 		System.out.println(String.format(format, "ID", "NOMBRE", "SALARIO", "NACIDO", "DEPARTAMENTO", "PROYECTOS"));
         empleados.forEach(System.out::println);

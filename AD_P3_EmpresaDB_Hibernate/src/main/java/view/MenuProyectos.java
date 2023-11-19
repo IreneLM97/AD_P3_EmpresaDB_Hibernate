@@ -10,6 +10,7 @@ import constantes.color.Colores;
 import controllers.EmpresaController;
 import models.Proyecto;
 
+// TODO AÑADIR OPCIONES DE MODIFICAR EMPLEADOS O ETC
 public class MenuProyectos {
 	public static void mostrarMenu(EmpresaController controller) {
 
@@ -52,13 +53,13 @@ public class MenuProyectos {
 	 * @param controller
 	 */
 	private static void listarProyectos(EmpresaController controller) {
-		// Obtenemos todos los departamentos
+		// Obtenemos todos los proyectos
 		List<Proyecto> proyectos = controller.getProyectos().stream()
                 .sorted(Comparator.comparing(Proyecto::getNombre))
                 .collect(Collectors.toList());
-		// Mostramos todos los departamentos
-		String format = "[ %-36s ][ %-20s ]";
-		System.out.println(String.format(format, "ID", "NOMBRE"));
+		// Mostramos todos los proyectos y sus empleados
+		String format = "[ %-36s ][ %-20s ][ %-55s ]";
+		System.out.println(String.format(format, "ID", "NOMBRE", "EMPLEADOS"));
         proyectos.forEach(System.out::println);
 	}
 
@@ -81,6 +82,11 @@ public class MenuProyectos {
 				+ Colores.RESET);
 	}
 
+	/**
+	 * Método para solicitar campos de un proyecto y actualizarlo en la base de datos.
+	 * 
+	 * @param controller
+	 */
 	private static void updateProyecto(EmpresaController controller) {
 		// Obtenemos proyecto que se quiere actualizar
 		UUID id = IO.readUUID("ID ? ");
@@ -91,18 +97,21 @@ public class MenuProyectos {
 			String nombre = IO.readStringOptional("Nombre ? ");
 			nombre = (nombre.isEmpty()) ? proyecto.getNombre() : nombre;
 
-			// Realizamos la actualización del proyecto
-			Proyecto p = new Proyecto.Builder().id(id).nombre(nombre).build();
-	        boolean actualizado = controller.updateProyecto(p);
+			// Actualizamos el proyecto
+			proyecto.setNombre(nombre);
 
-	        IO.println(actualizado ? "Actualizado correctamente" : Colores.ROJO +
-	                "\nNo se ha podido actualizar\n" +
-	                Colores.RESET);
+	        IO.println(controller.updateProyecto(proyecto) ? "Actualizado correctamente" : 
+	        	Colores.ROJO + "No se ha podido actualizar el proyecto" + Colores.RESET);
 	    } else {
 	        IO.println(Colores.ROJO + "No se ha encontrado un proyecto con el ID introducido" + Colores.RESET);
 	    }
 	}
 
+	/**
+	 * Método para solicitar un proyecto y eliminarlo en la base de datos.
+	 * 
+	 * @param controller
+	 */
 	private static void deleteProyecto(EmpresaController controller) {
 		// Obtenemos el proyecto a eliminar
 		UUID id = IO.readUUID("ID ? ");
@@ -112,7 +121,7 @@ public class MenuProyectos {
 	    if (proyecto != null) {  
 	        boolean eliminado = controller.deleteProyecto(proyecto);
 	        IO.println(eliminado ? "Proyecto eliminado correctamente" :
-	                Colores.ROJO + "No se ha podido eliminar el departamento" + Colores.RESET);
+	                Colores.ROJO + "No se ha podido eliminar el proyecto" + Colores.RESET);
 	        
 	    // proyecto no existe   
 	    } else {  

@@ -56,7 +56,6 @@ public class Departamento {
 //		return Objects.hash(id, nombre, jefe, empleados);
 	}
 	
-	// TODO MOSTRAR LISTA DE EMPLEADOS ASOCIADOS A ESE DEPARTAMENTO
 	@Override
 	public String toString() {
 	    String format = "[ %-36s ][ %-20s ][ %-55s ][ %-20s ]";

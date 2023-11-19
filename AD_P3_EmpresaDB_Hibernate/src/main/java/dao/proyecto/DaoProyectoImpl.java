@@ -38,6 +38,7 @@ public class DaoProyectoImpl implements DaoProyecto{
         return list;
 	}
 	
+	// TODO NO SE SI HAY QUE HACER ALGO CON EMPLEADO
 	@Override
 	public Boolean save(Proyecto entity) {
 		logger.info("save()");
@@ -52,7 +53,7 @@ public class DaoProyectoImpl implements DaoProyecto{
             return true;
 
         } catch (Exception e) {
-            throw new ProyectoException("Error al guardar proyecto raqueta con ID: " + entity.getId() + "\n" + e.getMessage());
+            throw new ProyectoException("Error al guardar proyecto con ID: " + entity.getId() + "\n" + e.getMessage());
         } finally {
             if (hb.getTransaction().isActive()) {
                 hb.getTransaction().rollback();

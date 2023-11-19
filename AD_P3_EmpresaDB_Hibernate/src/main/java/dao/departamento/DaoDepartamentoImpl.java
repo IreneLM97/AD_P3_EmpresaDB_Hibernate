@@ -39,52 +39,83 @@ public class DaoDepartamentoImpl implements DaoDepartamento {
         return list;
 	}
 
-	// TODO CONTROLAR QUE AL METER UN JEFE QUE FUESE JEFE DE OTRO DEPARTAMENTO SE ACTUALICE EN EL ANTIGUO Y FUNCIONE
-	@Override
-	public Boolean save(Departamento entity) {
-		logger.info("save()");
-        HibernateManager hb = HibernateManager.getInstance();
-        hb.open();
-        hb.getTransaction().begin();
-        
-        try {
-        	Empleado jefe = entity.getJefe();
+	
 
-            // Si hay un jefe asociado al departamento que intentamos guardar
-            if (jefe != null) {
-            	// Buscar al jefe en el contexto de persistencia para tener una instancia gestionada
-                Empleado jefePersistido = hb.getManager().find(Empleado.class, jefe.getId());
-                if (jefePersistido != null) {
-                    // Buscar los departamentos actuales del nuevo jefe y establecer su jefe a null
-                    TypedQuery<Departamento> query = hb.getManager().createQuery(
-                            "SELECT d FROM departamento d WHERE d.jefe.id = :jefe_id", Departamento.class);
-                    query.setParameter("jefe_id", jefePersistido.getId());
-                    query.getResultList().stream().forEach(dept -> {
-                        if (!dept.getId().equals(entity.getId())) {
-                            dept.setJefe(null);
-                            hb.getManager().merge(dept);
-                        }
-                    });
-                }
-            }
+	private boolean actualizarDepartamentosDelJefe(Departamento entity, Empleado jefe, HibernateManager hb) {
+	    // Nueva transacción para la lógica específica de actualizar departamentos del jefe
+	    hb.getTransaction().begin();
 
-            // Guardar o actualizar el departamento
-            hb.getManager().merge(entity);
-            
-            hb.getTransaction().commit();
-            hb.close();
-            return true;
+	    try {
+	        // Buscar al jefe en el contexto de persistencia para tener una instancia gestionada
+	        Empleado jefePersistido = hb.getManager().find(Empleado.class, jefe.getId());
+	        if (jefePersistido != null) {
+	            // Buscar los departamentos actuales del nuevo jefe y establecer su jefe a null
+	            TypedQuery<Departamento> query = hb.getManager().createQuery(
+	                    "SELECT d FROM departamento d WHERE d.jefe.id = :jefe_id", Departamento.class);
+	            query.setParameter("jefe_id", jefePersistido.getId());
+	            List<Departamento> departamentos = query.getResultList();
 
-        } catch (Exception e) {
-            return false;
-        } finally {
-            if (hb.getTransaction().isActive()) {
-                hb.getTransaction().rollback();
-            }
-        }
+	            for (Departamento dpto : departamentos) {
+	                if (!dpto.getId().equals(entity.getId())) {
+	                    dpto.setJefe(null);
+	                }
+	            }
+	        }
+
+	        // Commit de la transacción específica
+	        hb.getTransaction().commit();
+	        return true;
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        System.out.println(e);
+	        if (hb.getTransaction().isActive()) {
+	            hb.getTransaction().rollback();
+	        }
+	        return false;
+	    }
 	}
 
+	@Override
+	public Boolean save(Departamento entity) {
+	    logger.info("save()");
+	    HibernateManager hb = HibernateManager.getInstance();
+	    hb.open();
 
+	    try {
+	        Empleado jefe = entity.getJefe();
+	        if (jefe != null) {
+	            // Llamada al nuevo método con su propia transacción
+	            if (!actualizarDepartamentosDelJefe(entity, jefe, hb)) {
+	                return false;
+	            }
+	            
+	            // Actualizar la tabla de empleados para que el jefe pertenezca al nuevo departamento
+	            jefe.setDepartamento(entity);
+	            hb.getTransaction().begin();
+	            hb.getManager().merge(jefe);
+	            hb.getTransaction().commit();
+	        }
+
+	        try {
+	            hb.getTransaction().begin();
+	            // Guardar o actualizar el departamento
+	            hb.getManager().merge(entity);
+	            hb.getTransaction().commit();
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            System.out.println(e);
+	            if (hb.getTransaction().isActive()) {
+	                hb.getTransaction().rollback();
+	            }
+	            return false;
+	        }
+	        return true;
+	    } finally {
+	        hb.close();
+	    }
+	}
+
+	
 	@Override
 	public Boolean delete(Departamento entity) {
 		logger.info("delete()");

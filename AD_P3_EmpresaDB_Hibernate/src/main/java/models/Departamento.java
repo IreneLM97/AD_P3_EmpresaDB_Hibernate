@@ -17,7 +17,7 @@ public class Departamento {
     private UUID id = UUID.randomUUID();
     private String nombre;
 
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "jefe_id", nullable = true)
     private Empleado jefe;
 

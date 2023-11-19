@@ -24,7 +24,7 @@ public class Empleado {
     private Double salario;
     private LocalDate nacido;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "departamento_id", nullable = true)
     private Departamento departamento;
 

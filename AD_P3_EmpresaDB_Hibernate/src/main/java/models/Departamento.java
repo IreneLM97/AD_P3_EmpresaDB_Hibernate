@@ -1,8 +1,10 @@
 package models;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -57,9 +59,15 @@ public class Departamento {
 	// TODO MOSTRAR LISTA DE EMPLEADOS ASOCIADOS A ESE DEPARTAMENTO
 	@Override
 	public String toString() {
-	    String format = "[ %-36s ][ %-20s ][ %-55s ]";
+	    String format = "[ %-36s ][ %-20s ][ %-55s ][ %-20s ]";
 	    String jefeInfo = (jefe != null) ? jefe.getId() + " | " + jefe.getNombre() : "N/A";
-		return String.format(format, this.id.toString(), this.nombre, jefeInfo);
+	    
+	    List<String> empleadosList = this.empleados.stream()
+	            .map(empleado -> empleado.getNombre())
+	            .collect(Collectors.toList());
+	    String empleadosInfo = String.join(", ", empleadosList);
+	    
+		return String.format(format, this.id.toString(), this.nombre, jefeInfo, empleadosInfo);
 	}
 	
 	/**

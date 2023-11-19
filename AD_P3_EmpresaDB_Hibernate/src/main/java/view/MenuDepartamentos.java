@@ -58,19 +58,7 @@ public class MenuDepartamentos {
 	    // Mostramos todos los departamentos y sus empleados
 	    String format = "[ %-36s ][ %-20s ][ %-55s ][ %-20s ]";
 	    System.out.println(String.format(format, "ID", "NOMBRE", "JEFE", "EMPLEADOS"));
-
-	    departamentos.forEach(departamento -> {
-	    	UUID jefeId = (departamento.getJefe() != null) ? departamento.getJefe().getId() : null;
-	        // Obtener la lista de empleados del departamento
-	        List<String> empleados = departamento.getEmpleados().stream()
-	                .map(empleado -> controller.getEmpleadoById(empleado.getId()).getNombre())
-	                .collect(Collectors.toList());
-	        System.out.println(String.format(format,
-	                departamento.getId(),
-	                departamento.getNombre(),
-	                jefeId,
-	                String.join(", ", empleados)));
-	    });
+	    departamentos.forEach(System.out::println);
 	}
 
 	/**

@@ -16,6 +16,21 @@ public class DaoProyectoImpl implements DaoProyecto{
 	private final Logger logger = Logger.getLogger(DaoProyectoImpl.class.getName());
 	
 	@Override
+	public Proyecto getProyectoById(UUID id) {
+	    logger.info("getProyectoById()");
+	    HibernateManager hb = HibernateManager.getInstance();
+	    hb.open();
+	    try {
+	        return hb.getManager().find(Proyecto.class, id);
+	    } catch (Exception e) {
+	    	logger.warning("No se encontró proyecto con ID: " + id);
+	    	return null;
+	    } finally {
+	        hb.close();
+	    }
+	}
+	
+	@Override
 	public List<Proyecto> listar() {
 		logger.info("findAll()");
         HibernateManager hb = HibernateManager.getInstance();
@@ -25,8 +40,7 @@ public class DaoProyectoImpl implements DaoProyecto{
         hb.close();
         return list;
 	}
-
-	// TODO CONTROLAR QUE AL METER UN JEFE QUE FUESE JEFE DE OTRO DEPARTAMENTO SE ACTUALICE EN EL ANTIGUO
+	
 	@Override
 	public Boolean save(Proyecto entity) {
 		logger.info("save()");
@@ -41,7 +55,7 @@ public class DaoProyectoImpl implements DaoProyecto{
             return true;
 
         } catch (Exception e) {
-            throw new ProyectoException("Error al salvar raqueta con uuid: " + entity.getId() + "\n" + e.getMessage());
+            throw new ProyectoException("Error al guardar proyecto raqueta con ID: " + entity.getId() + "\n" + e.getMessage());
         } finally {
             if (hb.getTransaction().isActive()) {
                 hb.getTransaction().rollback();
@@ -63,18 +77,11 @@ public class DaoProyectoImpl implements DaoProyecto{
             hb.close();
             return true;
         } catch (Exception e) {
-            throw new DepartamentoException("Error al eliminar Proyecto con uuid: " + entity.getId() + " - " + e.getMessage());
+            throw new DepartamentoException("Error al eliminar proyecto con ID: " + entity.getId() + " - " + e.getMessage());
         } finally {
             if (hb.getTransaction().isActive()) {
                 hb.getTransaction().rollback();
             }
         }
 	}
-
-	@Override
-	public Proyecto getProyectoById(UUID id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

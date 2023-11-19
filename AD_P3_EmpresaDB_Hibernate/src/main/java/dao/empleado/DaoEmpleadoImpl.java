@@ -15,6 +15,7 @@ import models.Empleado;
 public class DaoEmpleadoImpl implements DaoEmpleado {
 	private final Logger logger = Logger.getLogger(DaoDepartamentoImpl.class.getName());
 	
+	@Override
 	public Empleado getEmpleadoById(UUID id) {
 	    logger.info("getEmpleadoById()");
 	    HibernateManager hb = HibernateManager.getInstance();
@@ -55,7 +56,7 @@ public class DaoEmpleadoImpl implements DaoEmpleado {
             return true;
 
         } catch (Exception e) {
-            throw new EmpleadoException("Error al salvar empleado con uuid: " + entity.getId() + "\n" + e.getMessage());
+            throw new EmpleadoException("Error al guardar empleado con ID: " + entity.getId() + "\n" + e.getMessage());
         } finally {
             if (hb.getTransaction().isActive()) {
                 hb.getTransaction().rollback();
@@ -77,7 +78,7 @@ public class DaoEmpleadoImpl implements DaoEmpleado {
             hb.close();
             return true;
         } catch (Exception e) {
-            throw new EmpleadoException("Error al eliminar Proyecto con uuid: " + entity.getId() + " - " + e.getMessage());
+            throw new EmpleadoException("Error al eliminar empleado con ID: " + entity.getId() + " - " + e.getMessage());
         } finally {
             if (hb.getTransaction().isActive()) {
                 hb.getTransaction().rollback();

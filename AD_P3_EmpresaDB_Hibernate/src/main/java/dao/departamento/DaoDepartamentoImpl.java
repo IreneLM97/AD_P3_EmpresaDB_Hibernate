@@ -13,6 +13,7 @@ import models.Empleado;
 public class DaoDepartamentoImpl implements DaoDepartamento {
 	private final Logger logger = Logger.getLogger(DaoDepartamentoImpl.class.getName());
 	
+	@Override
 	public Departamento getDepartamentoById(UUID id) {
 	    logger.info("getDepartamentoById()");
 	    HibernateManager hb = HibernateManager.getInstance();
@@ -62,8 +63,8 @@ public class DaoDepartamentoImpl implements DaoDepartamento {
 	                }
                 });
                 
-                jefe.setDepartamento(entity);
-                hb.getManager().merge(jefe);
+//                jefe.setDepartamento(entity);
+//                hb.getManager().merge(jefe);
             }
 
             // Guardar o actualizar el departamento

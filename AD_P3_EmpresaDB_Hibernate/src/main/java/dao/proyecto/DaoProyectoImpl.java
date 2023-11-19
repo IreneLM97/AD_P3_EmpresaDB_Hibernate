@@ -31,7 +31,7 @@ public class DaoProyectoImpl implements DaoProyecto{
 	}
 	
 	@Override
-	public List<Proyecto> listar() {
+	public List<Proyecto> findAll() {
 		logger.info("findAll()");
         HibernateManager hb = HibernateManager.getInstance();
         hb.open();

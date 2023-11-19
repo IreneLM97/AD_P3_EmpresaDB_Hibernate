@@ -9,10 +9,10 @@
 		<class>models.Proyecto</class>
 		
 		<properties>
-			<property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.show_sql" value="false" />
 			<property name="hibernate.format_sql" value="true" />
 			<!-- datos de conexión a la base de datos -->
-			<property name="jakarta.persistence.jdbc.url"	value="jdbc:mariadb://172.25.192.1:7706/hibernate_empresa_DB" />
+			<property name="jakarta.persistence.jdbc.url"	value="jdbc:mariadb://172.23.0.1:7706/hibernate_empresa_DB" />
 			<property name="jakarta.persistence.jdbc.driver" value="org.mariadb.jdbc.Driver" />
 			<property name="jakarta.persistence.jdbc.user" value="root" />
 			<property name="jakarta.persistence.jdbc.password" value="toor" />

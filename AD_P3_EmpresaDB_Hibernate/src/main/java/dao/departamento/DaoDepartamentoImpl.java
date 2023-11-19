@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import db.HibernateManager;
 import exceptions.DepartamentoException;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 import models.Departamento;
 import models.Empleado;
@@ -21,15 +22,14 @@ public class DaoDepartamentoImpl implements DaoDepartamento {
 	    try {
 	        return hb.getManager().find(Departamento.class, id);
 	    } catch (Exception e) {
-	    	logger.warning("No se encontró departamento con ID: " + id);
-	    	return null;
+	    	throw new DepartamentoException("No se encontró departamento con ID: " + id);
 	    } finally {
 	        hb.close();
 	    }
 	}
 	
 	@Override
-	public List<Departamento> listar() {
+	public List<Departamento> findAll() {
 		logger.info("findAll()");
         HibernateManager hb = HibernateManager.getInstance();
         hb.open();
@@ -37,42 +37,6 @@ public class DaoDepartamentoImpl implements DaoDepartamento {
         List<Departamento> list = query.getResultList();
         hb.close();
         return list;
-	}
-
-	
-
-	private boolean actualizarDepartamentosDelJefe(Departamento entity, Empleado jefe, HibernateManager hb) {
-	    // Nueva transacción para la lógica específica de actualizar departamentos del jefe
-	    hb.getTransaction().begin();
-
-	    try {
-	        // Buscar al jefe en el contexto de persistencia para tener una instancia gestionada
-	        Empleado jefePersistido = hb.getManager().find(Empleado.class, jefe.getId());
-	        if (jefePersistido != null) {
-	            // Buscar los departamentos actuales del nuevo jefe y establecer su jefe a null
-	            TypedQuery<Departamento> query = hb.getManager().createQuery(
-	                    "SELECT d FROM departamento d WHERE d.jefe.id = :jefe_id", Departamento.class);
-	            query.setParameter("jefe_id", jefePersistido.getId());
-	            List<Departamento> departamentos = query.getResultList();
-
-	            for (Departamento dpto : departamentos) {
-	                if (!dpto.getId().equals(entity.getId())) {
-	                    dpto.setJefe(null);
-	                }
-	            }
-	        }
-
-	        // Commit de la transacción específica
-	        hb.getTransaction().commit();
-	        return true;
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        System.out.println(e);
-	        if (hb.getTransaction().isActive()) {
-	            hb.getTransaction().rollback();
-	        }
-	        return false;
-	    }
 	}
 
 	@Override
@@ -84,8 +48,8 @@ public class DaoDepartamentoImpl implements DaoDepartamento {
 	    try {
 	        Empleado jefe = entity.getJefe();
 	        if (jefe != null) {
-	            // Llamada al nuevo método con su propia transacción
-	            if (!actualizarDepartamentosDelJefe(entity, jefe, hb)) {
+	            // Actualizamos el departamento que tuviese a ese jefe como jefe para setearlo a null
+	            if (!nullificarJefeDepartamento(entity, jefe, hb)) {
 	                return false;
 	            }
 	            
@@ -95,27 +59,22 @@ public class DaoDepartamentoImpl implements DaoDepartamento {
 	            hb.getManager().merge(jefe);
 	            hb.getTransaction().commit();
 	        }
-
-	        try {
-	            hb.getTransaction().begin();
-	            // Guardar o actualizar el departamento
-	            hb.getManager().merge(entity);
-	            hb.getTransaction().commit();
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	            System.out.println(e);
-	            if (hb.getTransaction().isActive()) {
-	                hb.getTransaction().rollback();
-	            }
-	            return false;
-	        }
+	        
+	        // Guardar o actualizar el departamento
+	        hb.getTransaction().begin();
+	        hb.getManager().merge(entity);
+	        hb.getTransaction().commit();
 	        return true;
+	     } catch (Exception e) {
+	    	 if (hb.getTransaction().isActive()) {
+	    		 hb.getTransaction().rollback();
+	    	 }
+	         return false;
 	    } finally {
 	        hb.close();
 	    }
 	}
 
-	
 	@Override
 	public Boolean delete(Departamento entity) {
 		logger.info("delete()");
@@ -137,8 +96,48 @@ public class DaoDepartamentoImpl implements DaoDepartamento {
             }
         }
 	}
+	
+	/**
+	 * Método privado para actualizar a null el jefe de los departamentos que tuviese asociado ese jefe al añadirlo como jefe de un nuevo departamento.
+	 * 
+	 * @param entity departamento que se quiere asignar el jefe
+	 * @param jefe empleado que se asigna como jefe y se setea a null en el resto de departamentos
+	 * @param hb hibernate manager
+	 * @return true si se puede actualizar, false en caso contrario
+	 */
+	private boolean nullificarJefeDepartamento(Departamento entity, Empleado jefe, HibernateManager hb) {
+	    // Nueva transacción para la lógica específica de actualizar departamentos del jefe
+	    hb.getTransaction().begin();
 
+	    try {
+	        // Buscamos al jefe en el contexto de persistencia para tener una instancia gestionada
+	        Empleado jefePersistido = hb.getManager().find(Empleado.class, jefe.getId());
+	        if (jefePersistido != null) {
+	            // Buscamos el departamento que tuviese como jefe a ese jefe
+	            TypedQuery<Departamento> query = hb.getManager().createQuery(
+	                    "SELECT d FROM departamento d WHERE d.jefe.id = :jefe_id AND d.id != :dpto_id", Departamento.class);
+	            query.setParameter("jefe_id", jefePersistido.getId());
+	            query.setParameter("dpto_id", entity.getId());
+	            query.getSingleResult().setJefe(null);
+	        }
+
+	        // Commit de la transacción específica
+	        hb.getTransaction().commit();
+	        return true;
+	    } catch (NoResultException e) {
+	    	return true;
+	    } catch (Exception e) {
+	        logger.warning("Problemas al actualizar jefe del departamento a null " + e.getMessage());
+	        return false;
+	    } finally {
+	    	if (hb.getTransaction().isActive()) {
+	            hb.getTransaction().rollback();
+	        }
+	    }
+	}
 }
+
+
 
 
 

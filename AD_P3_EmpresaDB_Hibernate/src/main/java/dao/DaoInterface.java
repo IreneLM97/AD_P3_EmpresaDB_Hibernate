@@ -13,7 +13,7 @@ public interface DaoInterface<T> {
 	 * 
 	 * @return 
 	 */
-	List<T> listar();
+	List<T> findAll();
 	
 	/**
 	 * Método para guardar un registro en la tabla.

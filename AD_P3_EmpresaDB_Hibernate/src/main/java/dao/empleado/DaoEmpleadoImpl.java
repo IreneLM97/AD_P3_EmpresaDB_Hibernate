@@ -31,7 +31,7 @@ public class DaoEmpleadoImpl implements DaoEmpleado {
 	}
 
 	@Override
-	public List<Empleado> listar() {
+	public List<Empleado> findAll() {
 		logger.info("findAll()");
         HibernateManager hb = HibernateManager.getInstance();
         hb.open();

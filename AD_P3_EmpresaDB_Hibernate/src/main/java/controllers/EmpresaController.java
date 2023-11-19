@@ -34,7 +34,7 @@ public class EmpresaController {
     
     public List<Departamento> getDepartamentos() {
         logger.info("Obteniendo departamentos");
-        return departamentoDao.listar();
+        return departamentoDao.findAll();
     }
 
     public Boolean createDepartamento(Departamento departamento) {
@@ -61,7 +61,7 @@ public class EmpresaController {
 
     public List<Empleado> getEmpleados() {
         logger.info("Obteniendo empleados");
-        return empleadoDao.listar();
+        return empleadoDao.findAll();
     }
 
     public Boolean createEmpleado(Empleado empleado) {
@@ -88,7 +88,7 @@ public class EmpresaController {
     
     public List<Proyecto> getProyectos() {
         logger.info("Obteniendo proyectos");
-        return proyectoDao.listar();
+        return proyectoDao.findAll();
     }
 
     public Boolean createProyecto(Proyecto proyecto) {

@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import IO.IO;
 import constantes.color.Colores;
 import controllers.EmpresaController;
+import models.Departamento;
 import models.Proyecto;
 
 public class MenuProyectos {
@@ -68,8 +69,10 @@ public class MenuProyectos {
 	 * @param controller
 	 */
 	private static void insertProyecto(EmpresaController controller) {
+		// Obtenemos los datos del proyecto que se quiere insertar
 		String nombre = IO.readString("Nombre ? ");
 
+		// Creamos el proyecto
 		Proyecto proyecto = new Proyecto(nombre);
 				
 		// Comprobamos si se ha insertado el registro y damos feedback
@@ -80,31 +83,39 @@ public class MenuProyectos {
 	}
 
 	private static void updateProyecto(EmpresaController controller) {
-		// Obtenemos los datos del proyecto que se quiere modificar
-				IO.print("ID ? ");
-				UUID id = IO.readUUID();
-				IO.print("Nombre ? ");
-				String nombre = IO.readStringOptional();
+		// Obtenemos proyecto que se quiere actualizar
+		UUID id = IO.readUUID("ID ? ");
+		Proyecto proyecto = controller.getProyectoById(id);
+		
+		// Comprobamos si existe ese proyecto y pedimos el resto de datos
+		if(proyecto != null) {
+			String nombre = IO.readStringOptional("Nombre ? ");
+			nombre = (nombre.isEmpty()) ? proyecto.getNombre() : nombre;
 
-				// Creamos el proyecto y lo modificamos
-				Proyecto proyecto = new Proyecto(id, nombre);
-				IO.println(controller.updateProyecto(proyecto) ? "Actualizado correctamente"
-						: Colores.ROJO 
-						+ "\nRegistro no encontrado o Información no válida\n" 
-						+ "Asegúrese de:\n"
-						+ "- Haber rellenado al menos 1 campo\n"
-						+ "- Que el ID del proyecto a modificar exista en la tabla proyecto\n"
-						+ "- Que el ID del empleado exista en la tabla empleado" 
-						+ Colores.RESET);
+			// Realizamos la actualización del proyecto
+	        boolean actualizado = controller.updateProyecto(new Proyecto(id, nombre));
+
+	        IO.println(actualizado ? "Actualizado correctamente" : Colores.ROJO +
+	                "\nNo se ha podido actualizar\n" +
+	                Colores.RESET);
+	    } else {
+	        IO.println(Colores.ROJO + "No se ha encontrado un proyecto con el ID introducido" + Colores.RESET);
+	    }
 	}
 
 	private static void deleteProyecto(EmpresaController controller) {
+		// Obtenemos el proyecto a eliminar
 		UUID id = IO.readUUID("ID ? ");
-		Proyecto proyecto = new Proyecto(id);
+		Proyecto proyecto = controller.getProyectoById(id);
 		
-		IO.println(controller.deleteProyecto(proyecto) ? "Eliminado correctamente" :
-			Colores.ROJO 
-			+ "No se ha encontrado un Proyecto con el ID introducido" 
-			+ Colores.RESET);
+		// proyecto existe
+	    if (proyecto != null) {  
+	        boolean eliminado = controller.deleteProyecto(proyecto);
+	        IO.println(eliminado ? "Proyecto eliminado correctamente" :
+	                Colores.ROJO + "No se ha podido eliminar el departamento" + Colores.RESET);
+	    // proyecto no existe   
+	    } else {  
+	        IO.println(Colores.ROJO + "No se ha encontrado un proyecto con el ID introducido" + Colores.RESET);
+	    }
 	}
 }

@@ -81,6 +81,11 @@ public class EmpresaController {
  // ==========================================================================================
 
  // ======================================| PROYECTO |======================================
+    public Proyecto getProyectoById(UUID id) {
+        logger.info("Obteniendo empleado por ID: " + id);
+        return proyectoDao.getProyectoById(id);
+    }
+    
     public List<Proyecto> getProyectos() {
         logger.info("Obteniendo proyectos");
         return proyectoDao.listar();

@@ -52,19 +52,20 @@ public class DaoDepartamentoImpl implements DaoDepartamento {
 
             // Si hay un jefe asociado al departamento que intentamos guardar
             if (jefe != null) {
-                // Buscar los departamentos actuales del nuevo jefe y establecer su jefe a null
-                TypedQuery<Departamento> query = hb.getManager().createQuery(
-                        "SELECT d FROM departamento d WHERE d.jefe.id = :jefe_id", Departamento.class);
-                query.setParameter("jefe_id", jefe.getId());
-                query.getResultList().stream().forEach(dept -> {
-	                if (!dept.getId().equals(entity.getId())) {
-	                	dept.setJefe(null);
-	                    hb.getManager().merge(dept);
-	                }
-                });
-                
-//                jefe.setDepartamento(entity);
-//                hb.getManager().merge(jefe);
+            	// Buscar al jefe en el contexto de persistencia para tener una instancia gestionada
+                Empleado jefePersistido = hb.getManager().find(Empleado.class, jefe.getId());
+                if (jefePersistido != null) {
+                    // Buscar los departamentos actuales del nuevo jefe y establecer su jefe a null
+                    TypedQuery<Departamento> query = hb.getManager().createQuery(
+                            "SELECT d FROM departamento d WHERE d.jefe.id = :jefe_id", Departamento.class);
+                    query.setParameter("jefe_id", jefePersistido.getId());
+                    query.getResultList().stream().forEach(dept -> {
+                        if (!dept.getId().equals(entity.getId())) {
+                            dept.setJefe(null);
+                            hb.getManager().merge(dept);
+                        }
+                    });
+                }
             }
 
             // Guardar o actualizar el departamento

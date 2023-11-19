@@ -73,7 +73,7 @@ public class MenuEmpleados {
 			return;
 		}
 				
-		// Creamos el empleado y lo insertamos
+		// Creamos el empleado
 		Empleado empleado = new Empleado(nombre, salario, nacido);
 		if(departamento != null) empleado.setDepartamento(controller.getDepartamentoById(departamento));
 						
@@ -89,7 +89,7 @@ public class MenuEmpleados {
 	    UUID id = IO.readUUID("ID ? ");
 	    Empleado empleado = controller.getEmpleadoById(id);
 
-	    // Comprobamos si existe ese empleado
+	    // Comprobamos si existe ese empleado y pedimos el resto de datos
 	    if (empleado != null) {
 	        String nombre = IO.readStringOptional("Nombre ? ");
 	        nombre = (nombre.isEmpty()) ? empleado.getNombre() : nombre;

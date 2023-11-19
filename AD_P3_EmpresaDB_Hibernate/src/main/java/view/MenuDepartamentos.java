@@ -88,7 +88,7 @@ public class MenuDepartamentos {
 			return;
 		}
 		
-		// Creamos el departamento y lo insertamos
+		// Creamos el departamento 
 		Departamento departamento = new Departamento(nombre);
 		if(jefe != null) departamento.setJefe(controller.getEmpleadoById(jefe));
 				
@@ -109,7 +109,7 @@ public class MenuDepartamentos {
 	    UUID id = IO.readUUID("ID ? ");
 	    Departamento departamento = controller.getDepartamentoById(id);
 
-	    // Comprobamos si existe ese departamento
+	    // Comprobamos si existe ese departamento y pedimos el resto de datos
 	    if (departamento != null) {
 	        String nombre = IO.readStringOptional("Nombre ? ");
 	        nombre = (nombre.isEmpty()) ? departamento.getNombre() : nombre;
@@ -143,7 +143,7 @@ public class MenuDepartamentos {
 	 * @param controller
 	 */
 	private static void deleteDepartamento(EmpresaController controller) {
-		// Obtener el departamento a eliminar
+		// Obtenemos el departamento a eliminar
 	    UUID id = IO.readUUID("ID ? ");
 	    Departamento departamento = controller.getDepartamentoById(id);
 	    

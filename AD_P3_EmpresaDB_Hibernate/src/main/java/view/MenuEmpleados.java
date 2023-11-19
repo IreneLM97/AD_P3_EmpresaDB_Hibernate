@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import IO.IO;
 import constantes.color.Colores;
 import controllers.EmpresaController;
+import models.Departamento;
 import models.Empleado;
 
 public class MenuEmpleados {
@@ -48,17 +49,27 @@ public class MenuEmpleados {
 		}
 	}
 
+	/**
+	 * Método para listar los empleados al usuario.
+	 * 
+	 * @param controller
+	 */
 	private static void listarEmpleados(EmpresaController controller) {
 		// Obtenemos todos los empleados
 		List<Empleado> empleados = controller.getEmpleados().stream()
                 .sorted(Comparator.comparing(Empleado::getNombre))
                 .collect(Collectors.toList());
 		// Mostramos todos los empleados
-		String format = "[ %-36s ][ %-20s ][ %-8s ][ %-12s ][ %-55s ]";
-		System.out.println(String.format(format, "ID", "NOMBRE", "SALARIO", "NACIDO", "DEPARTAMENTO"));
+		String format = "[ %-36s ][ %-20s ][ %-8s ][ %-12s ][ %-55s ][ %-55s ]";
+		System.out.println(String.format(format, "ID", "NOMBRE", "SALARIO", "NACIDO", "DEPARTAMENTO", "PROYECTOS"));
         empleados.forEach(System.out::println);
 	}
 
+	/**
+	 * Método para solicitar campos de un empleado e insertarlo en la base de datos.
+	 * 
+	 * @param controller
+	 */
 	private static void insertEmpleado(EmpresaController controller) {
 		// Obtenemos los datos del empleado que se quiere insertar
 		String nombre = IO.readString("Nombre ? ");
@@ -67,8 +78,8 @@ public class MenuEmpleados {
 		UUID departamento = IO.readUUIDOptional("Departamento ? ");
 
 		// Comprobamos si existe el departamento
-		if (departamento != null && controller.getEmpleadoById(departamento) == null) {
-			System.out.println(Colores.ROJO + "No se ha podido insertar el empleado, el departamento con ID: " + departamento + " no existe en la tabla EMPLEADOS" + Colores.ROJO + Colores.RESET);
+		if (departamento != null && controller.getDepartamentoById(departamento) == null) {
+			System.out.println(Colores.ROJO + "No se ha podido insertar el empleado, el departamento con ID: " + departamento + " no existe en la tabla DEPARTAMENTOS" + Colores.ROJO + Colores.RESET);
 			return;
 		}
 				
@@ -83,6 +94,11 @@ public class MenuEmpleados {
 				+ Colores.RESET);
 	}
 
+	/**
+	 * Método para solicitar campos de un empleado y actualizarlo en la base de datos.
+	 * 
+	 * @param controller
+	 */
 	private static void updateEmpleado(EmpresaController controller) {
 		// Obtenemos empleado que se quiere actualizar
 	    UUID id = IO.readUUID("ID ? ");
@@ -99,36 +115,47 @@ public class MenuEmpleados {
 	        LocalDate nacido = IO.readLocalDateOptional("Nacido ? ");
 	        nacido = (nacido == null) ? empleado.getNacido() : nacido;
 
-	        UUID departamento = IO.readUUIDOptional("Departamento ? ");
-	        
+	        UUID departamento_id = IO.readUUIDOptional("Departamento ? ");
 	        // Comprobamos si existe el departamento
-			if (departamento != null && controller.getDepartamentoById(departamento) == null) {
-				System.out.println(Colores.ROJO + "No se ha podido actualizar el empleado, el departamento con ID: " + departamento + " no existe en la tabla EMPLEADOS" + Colores.ROJO + Colores.RESET);
+			if (departamento_id != null && controller.getDepartamentoById(departamento_id) == null) {
+				System.out.println(Colores.ROJO + "No se ha podido actualizar el empleado, el departamento con ID: " + departamento_id + " no existe en la tabla DEPARTAMENTOS" + Colores.ROJO + Colores.RESET);
 				return;
 			}
+			// Establecemos el departamento del empleado
+			Departamento departamento = (departamento_id == null) ? empleado.getDepartamento() : controller.getDepartamentoById(departamento_id);
 
-	        // Realiza la actualización del empleado
-			Empleado e = new Empleado.Builder().nombre(nombre).salario(salario).nacido(nacido).departamento(controller.getDepartamentoById(departamento)).build();
-	        boolean actualizado = controller.updateEmpleado(e);
-
-	        IO.println(actualizado ? "Actualizado correctamente" : Colores.ROJO +
-	                "\nInformación no válida\n" +
-	                "Asegúrese de:\n" +
-	                "- Haber rellenado al menos 1 campo\n" +
-	                "- Que el ID del jefe exista en la tabla empleado" +
-	                Colores.RESET);
+	        // Actualizamos el empleado
+			empleado.setNombre(nombre);
+			empleado.setSalario(salario);
+			empleado.setNacido(nacido);
+			empleado.setDepartamento(departamento);
+			
+			IO.println(controller.updateEmpleado(empleado) ? "Actualizado correctamente" : 
+	        	Colores.ROJO + "No se ha podido actualizar el empleado" + Colores.RESET);
 	    } else {
-	        IO.println(Colores.ROJO + "No se ha encontrado un departamento con el ID introducido" + Colores.RESET);
+	        IO.println(Colores.ROJO + "No se ha encontrado un empleado con el ID introducido" + Colores.RESET);
 	    }
 	}
 
+	/**
+	 * Método para solicitar un empleado y eliminarlo en la base de datos.
+	 * 
+	 * @param controller
+	 */
 	private static void deleteEmpleado(EmpresaController controller) {
+		// Obtenemos el empleado a eliminar
 		UUID id = IO.readUUID("ID ? ");
-		Empleado empleado = new Empleado.Builder().id(id).build();
+		Empleado empleado = controller.getEmpleadoById(id);
 		
-		IO.println(controller.deleteEmpleado(empleado) ? "Eliminado correctamente" :
-			Colores.ROJO 
-			+ "No se ha encontrado un Empleado con el ID introducido" 
-			+ Colores.RESET);
+		// empleado existe
+	    if (empleado != null) {  
+	        boolean eliminado = controller.deleteEmpleado(empleado);
+	        IO.println(eliminado ? "Empleado eliminado correctamente" :
+	                Colores.ROJO + "No se ha podido eliminar el empleado" + Colores.RESET);
+	        
+	    // empleado no existe   
+	    } else {  
+	        IO.println(Colores.ROJO + "No se ha encontrado un empleado con el ID introducido" + Colores.RESET);
+	    }
 	}
 }

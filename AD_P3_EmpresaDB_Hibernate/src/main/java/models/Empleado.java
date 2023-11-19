@@ -2,8 +2,10 @@ package models;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 //import org.hibernate.annotations.UuidGenerator;
 
@@ -46,6 +48,14 @@ public class Empleado {
         this.proyectos = builder.proyectos;
     }
 	
+    @PreRemove
+	public void nullificarDepartamento() {
+    	if(this.departamento != null) {
+	    	departamento.getEmpleados().remove(this); // lo eliminamos de la lista de empleados de ese departamento
+			this.setDepartamento(null);
+    	}
+	}
+    
 	@Override
 	public boolean equals(Object obj) {
 		Empleado empleado = (Empleado) obj;
@@ -66,9 +76,15 @@ public class Empleado {
 	
 	@Override
 	public String toString() {
-		String format = "[ %-36s ][ %-20s ][ %-8s ][ %-12s ][ %-55s ]";
+		String format = "[ %-36s ][ %-20s ][ %-8s ][ %-12s ][ %-55s ][ %-55s ]";
 		String departamentoInfo = (departamento != null) ? departamento.getId() + " | " + departamento.getNombre() : "N/A";
-	    return String.format(format, this.id.toString(), this.nombre, salario, nacido, departamentoInfo);
+		
+		List<String> proyectosList = this.proyectos.stream()
+	            .map(proyecto -> proyecto.getNombre())
+	            .collect(Collectors.toList());
+	    String proyectosInfo = String.join(", ", proyectosList);
+	    
+	    return String.format(format, this.id.toString(), this.nombre, salario, nacido, departamentoInfo, proyectosInfo);
 	}
 	
 	/**

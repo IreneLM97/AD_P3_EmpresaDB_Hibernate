@@ -38,7 +38,7 @@ public class DaoEmpleadoImpl implements DaoEmpleado {
         return list;
 	}
 
-	// TODO AL ACTUALIZAR DUPLICA
+	// TODO NO SE SI HAY QUE HACER ALGO CON PROYECTO
 	@Override
 	public Boolean save(Empleado entity) {
 		logger.info("save()");
@@ -82,5 +82,4 @@ public class DaoEmpleadoImpl implements DaoEmpleado {
             }
         }
 	}
-
 }

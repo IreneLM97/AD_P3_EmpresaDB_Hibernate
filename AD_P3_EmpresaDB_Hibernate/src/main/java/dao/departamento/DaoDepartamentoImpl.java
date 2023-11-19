@@ -38,7 +38,7 @@ public class DaoDepartamentoImpl implements DaoDepartamento {
         return list;
 	}
 
-	// TODO CONTROLAR QUE AL METER UN JEFE QUE FUESE JEFE DE OTRO DEPARTAMENTO SE ACTUALICE EN EL ANTIGUO
+	// TODO CONTROLAR QUE AL METER UN JEFE QUE FUESE JEFE DE OTRO DEPARTAMENTO SE ACTUALICE EN EL ANTIGUO Y FUNCIONE
 	@Override
 	public Boolean save(Departamento entity) {
 		logger.info("save()");
@@ -47,33 +47,28 @@ public class DaoDepartamentoImpl implements DaoDepartamento {
         hb.getTransaction().begin();
         
         try {
-        	if (entity.getJefe() != null) {
-                // Obtener el jefe actual del departamento
-                Empleado nuevoJefe = hb.getManager().find(Empleado.class, entity.getJefe().getId());
-                hb.getManager().detach(nuevoJefe);
+        	Empleado jefe = entity.getJefe();
 
+            // Si hay un jefe asociado al departamento que intentamos guardar
+            if (jefe != null) {
                 // Buscar los departamentos actuales del nuevo jefe y establecer su jefe a null
                 TypedQuery<Departamento> query = hb.getManager().createQuery(
                         "SELECT d FROM departamento d WHERE d.jefe.id = :jefe_id", Departamento.class);
-                query.setParameter("jefe_id", nuevoJefe.getId());
-
-                List<Departamento> departamentosDelJefe = query.getResultList();
-                for (Departamento dept : departamentosDelJefe) {
-                    dept.setJefe(null);
-                    hb.getManager().merge(dept);
-                }
-
-                // Actualizar el departamento del jefe con el nuevo departamento
-                nuevoJefe.setDepartamento(entity);
-                hb.getManager().merge(nuevoJefe);
-
-                // Establecer el jefe del departamento
-                entity.setJefe(nuevoJefe);
+                query.setParameter("jefe_id", jefe.getId());
+                query.getResultList().stream().forEach(dept -> {
+	                if (!dept.getId().equals(entity.getId())) {
+	                	dept.setJefe(null);
+	                    hb.getManager().merge(dept);
+	                }
+                });
+                
+                jefe.setDepartamento(entity);
+                hb.getManager().merge(jefe);
             }
 
             // Guardar o actualizar el departamento
             hb.getManager().merge(entity);
-
+            
             hb.getTransaction().commit();
             hb.close();
             return true;

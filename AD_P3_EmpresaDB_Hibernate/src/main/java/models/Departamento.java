@@ -17,11 +17,11 @@ public class Departamento {
     private UUID id = UUID.randomUUID();
     private String nombre;
 
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @OneToOne
     @JoinColumn(name = "jefe_id", nullable = true)
     private Empleado jefe;
 
-    @OneToMany(mappedBy = "departamento", orphanRemoval = false, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "departamento", orphanRemoval = false, fetch = FetchType.EAGER)
     private Set<Empleado> empleados = new HashSet<>();
 	
     // TODO INTENTAR OPTIMIZAR CONSTRUCTORES CON BUILDER

@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import IO.IO;
 import constantes.color.Colores;
 import controllers.EmpresaController;
-import models.Departamento;
 import models.Proyecto;
 
 public class MenuProyectos {
@@ -73,7 +72,7 @@ public class MenuProyectos {
 		String nombre = IO.readString("Nombre ? ");
 
 		// Creamos el proyecto
-		Proyecto proyecto = new Proyecto(nombre);
+		Proyecto proyecto = new Proyecto.Builder().nombre(nombre).build();
 				
 		// Comprobamos si se ha insertado el registro y damos feedback
 		IO.println(controller.createProyecto(proyecto) ? "Insertado correctamente" :
@@ -93,7 +92,8 @@ public class MenuProyectos {
 			nombre = (nombre.isEmpty()) ? proyecto.getNombre() : nombre;
 
 			// Realizamos la actualización del proyecto
-	        boolean actualizado = controller.updateProyecto(new Proyecto(id, nombre));
+			Proyecto p = new Proyecto.Builder().id(id).nombre(nombre).build();
+	        boolean actualizado = controller.updateProyecto(p);
 
 	        IO.println(actualizado ? "Actualizado correctamente" : Colores.ROJO +
 	                "\nNo se ha podido actualizar\n" +
@@ -113,6 +113,7 @@ public class MenuProyectos {
 	        boolean eliminado = controller.deleteProyecto(proyecto);
 	        IO.println(eliminado ? "Proyecto eliminado correctamente" :
 	                Colores.ROJO + "No se ha podido eliminar el departamento" + Colores.RESET);
+	        
 	    // proyecto no existe   
 	    } else {  
 	        IO.println(Colores.ROJO + "No se ha encontrado un proyecto con el ID introducido" + Colores.RESET);

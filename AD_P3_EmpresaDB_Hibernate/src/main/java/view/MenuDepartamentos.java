@@ -90,7 +90,7 @@ public class MenuDepartamentos {
 		}
 		
 		// Creamos el departamento 
-		Departamento departamento = new Departamento(nombre);
+		Departamento departamento = new Departamento.Builder().nombre(nombre).build();
 		if(jefe != null) departamento.setJefe(controller.getEmpleadoById(jefe));
 				
 		// Comprobamos si se ha insertado el registro y damos feedback

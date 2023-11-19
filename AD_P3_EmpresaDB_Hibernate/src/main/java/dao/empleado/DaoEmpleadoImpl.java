@@ -6,10 +6,8 @@ import java.util.logging.Logger;
 
 import dao.departamento.DaoDepartamentoImpl;
 import db.HibernateManager;
-import exceptions.DepartamentoException;
 import exceptions.EmpleadoException;
 import jakarta.persistence.TypedQuery;
-import models.Departamento;
 import models.Empleado;
 
 public class DaoEmpleadoImpl implements DaoEmpleado {
@@ -23,8 +21,7 @@ public class DaoEmpleadoImpl implements DaoEmpleado {
 	    try {
 	        return hb.getManager().find(Empleado.class, id);
 	    } catch (Exception e) {
-	    	logger.warning("No se encontró empleado con ID: " + id);
-	    	return null;
+	    	throw new EmpleadoException("No se encontró empleado con ID: " + id);
 	    } finally {
 	        hb.close();
 	    }

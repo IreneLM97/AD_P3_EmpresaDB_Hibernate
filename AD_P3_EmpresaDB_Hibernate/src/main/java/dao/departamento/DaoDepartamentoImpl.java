@@ -137,10 +137,6 @@ public class DaoDepartamentoImpl implements DaoDepartamento {
 	}
 }
 
-
-
-
-
 // Comprobamos si ha introducido un jefe el usuario
 //Empleado jefe = null;
 //if (entity.getJefe().getId() != null) {  // si se ha introducido jefe

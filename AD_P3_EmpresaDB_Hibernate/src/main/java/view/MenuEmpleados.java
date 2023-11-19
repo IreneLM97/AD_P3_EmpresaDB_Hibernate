@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import IO.IO;
 import constantes.color.Colores;
 import controllers.EmpresaController;
-import models.Departamento;
 import models.Empleado;
 
 public class MenuEmpleados {
@@ -74,7 +73,7 @@ public class MenuEmpleados {
 		}
 				
 		// Creamos el empleado
-		Empleado empleado = new Empleado(nombre, salario, nacido);
+		Empleado empleado = new Empleado.Builder().nombre(nombre).salario(salario).nacido(nacido).build();
 		if(departamento != null) empleado.setDepartamento(controller.getDepartamentoById(departamento));
 						
 		// Comprobamos si se ha insertado el registro y damos feedback
@@ -108,8 +107,9 @@ public class MenuEmpleados {
 				return;
 			}
 
-	        // Realiza la actualización del departamento
-	        boolean actualizado = controller.updateEmpleado(new Empleado(nombre, salario, nacido, controller.getDepartamentoById(departamento)));
+	        // Realiza la actualización del empleado
+			Empleado e = new Empleado.Builder().nombre(nombre).salario(salario).nacido(nacido).departamento(controller.getDepartamentoById(departamento)).build();
+	        boolean actualizado = controller.updateEmpleado(e);
 
 	        IO.println(actualizado ? "Actualizado correctamente" : Colores.ROJO +
 	                "\nInformación no válida\n" +
@@ -124,7 +124,7 @@ public class MenuEmpleados {
 
 	private static void deleteEmpleado(EmpresaController controller) {
 		UUID id = IO.readUUID("ID ? ");
-		Empleado empleado = new Empleado(id);
+		Empleado empleado = new Empleado.Builder().id(id).build();
 		
 		IO.println(controller.deleteEmpleado(empleado) ? "Eliminado correctamente" :
 			Colores.ROJO 

@@ -10,7 +10,6 @@ import constantes.color.Colores;
 import controllers.EmpresaController;
 import models.Proyecto;
 
-// TODO AÑADIR OPCIONES DE MODIFICAR EMPLEADOS O ETC
 public class MenuProyectos {
 	public static void mostrarMenu(EmpresaController controller) {
 

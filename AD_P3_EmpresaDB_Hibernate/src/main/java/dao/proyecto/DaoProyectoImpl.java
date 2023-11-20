@@ -38,7 +38,6 @@ public class DaoProyectoImpl implements DaoProyecto{
         return list;
 	}
 	
-	// TODO NO SE SI HAY QUE HACER ALGO CON EMPLEADO
 	@Override
 	public Boolean save(Proyecto entity) {
 		logger.info("save()");

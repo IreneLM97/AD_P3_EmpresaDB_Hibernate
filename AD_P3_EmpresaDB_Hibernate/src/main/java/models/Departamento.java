@@ -43,7 +43,7 @@ public class Departamento {
 	@Override
     public boolean equals(Object obj) {
         Departamento departamento = (Departamento) obj;
-        return id.equals(departamento.id);
+        return this.id.equals(departamento.id);
     }
 	
 	@Override

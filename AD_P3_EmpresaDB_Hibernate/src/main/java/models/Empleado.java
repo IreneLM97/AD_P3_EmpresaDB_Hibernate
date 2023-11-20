@@ -49,17 +49,22 @@ public class Empleado {
     }
 	
     @PreRemove
-	public void nullificarDepartamento() {
+	public void eliminarDependencias() {
+    	// eliminamos dependencias con relación con departamento
     	if(this.departamento != null) {
 	    	departamento.getEmpleados().remove(this); // lo eliminamos de la lista de empleados de ese departamento
 			this.setDepartamento(null);
     	}
+    	
+    	// eliminamos dependencias con relación con proyecto
+    	this.proyectos.stream().forEach(proyecto -> proyecto.getEmpleados().remove(this));
+    	this.proyectos.clear();
 	}
     
 	@Override
 	public boolean equals(Object obj) {
 		Empleado empleado = (Empleado) obj;
-        return id.equals(empleado.id);
+        return this.id.equals(empleado.id);
     }
 	
 	@Override

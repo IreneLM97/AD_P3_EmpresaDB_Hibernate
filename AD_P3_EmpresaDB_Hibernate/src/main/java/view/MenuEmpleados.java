@@ -11,19 +11,21 @@ import constantes.color.Colores;
 import controllers.EmpresaController;
 import models.Departamento;
 import models.Empleado;
+import models.Proyecto;
 
-// TODO AÑADIR OPCIONES DE ANADIR A PROYECTO O ETC
 public class MenuEmpleados {
 	public static void mostrarMenu(EmpresaController controller) {
 
 		List<String> opciones = List.of(
-				"\n =======|MENU EMPLEADOS|========\n", 
-				"| 1.- Listar Empleados	        |\n",
-				"| 2.- Agregar Empleado	        |\n",
-				"| 3.- Modificar Empleado 	|\n",
-				"| 4.- Eliminar Empleado	     	|\n",
-				"| 5.- Volver al menu principal  |\n", 
-				" ===============================\n");
+				"\n =========|MENU EMPLEADOS|==========\n", 
+				"| 1.- Listar Empleados	            |\n",
+				"| 2.- Agregar Empleado	            |\n",
+				"| 3.- Modificar Empleado 	    |\n",
+				"| 4.- Añadir Empleado a Proyecto    |\n",
+				"| 5.- Eliminar Empleado de Proyecto |\n",
+				"| 6.- Eliminar Empleado	            |\n",
+				"| 7.- Volver al menu principal      |\n", 
+				" ===================================\n");
 
 		while (true) {
 			opciones.stream().forEach(System.out::print);
@@ -39,9 +41,15 @@ public class MenuEmpleados {
 					updateEmpleado(controller);
 					break;
 				case 4:
-					deleteEmpleado(controller);
+					addToProyecto(controller);
 					break;
 				case 5:
+					deleteFromProyecto(controller);
+					break;
+				case 6:
+					deleteEmpleado(controller);
+					break;
+				case 7:
 					MenuPrincipal.main(null);
 					break;
 				default:
@@ -90,9 +98,7 @@ public class MenuEmpleados {
 						
 		// Comprobamos si se ha insertado el registro y damos feedback
 		IO.println(controller.createEmpleado(empleado) ? "Insertado correctamente" :
-				Colores.ROJO 
-				+ "No se ha podido insertar el empleado" 
-				+ Colores.RESET);
+				Colores.ROJO + "No se ha podido insertar el empleado" + Colores.RESET);
 	}
 
 	/**
@@ -136,6 +142,68 @@ public class MenuEmpleados {
 	    } else {
 	        IO.println(Colores.ROJO + "No se ha encontrado un empleado con el ID introducido" + Colores.RESET);
 	    }
+	}
+	
+	/**
+	 * Método para añadir un empleado a un proyecto.
+	 * 
+	 * @param controller
+	 */
+	private static void addToProyecto(EmpresaController controller) {
+		// Obtenemos empleado que se quiere añadir al proyecto
+	    UUID id_empleado = IO.readUUID("ID del Empleado ? ");
+	    Empleado empleado = controller.getEmpleadoById(id_empleado);
+	    
+	    // Obtenemos el proyecto al que se quiere añadir el empleado
+	    UUID id_proyecto = IO.readUUID("ID del Proyecto ? ");
+	    Proyecto proyecto = controller.getProyectoById(id_proyecto);
+	    
+	    // Comprobamos si existen empleado y proyecto
+	    if(empleado == null || proyecto == null) {
+	    	IO.println(Colores.ROJO + "No se puede realizar la operación porque no existe empleado o proyecto" + Colores.RESET);
+	    	return;
+	    }
+	    
+	    // Comprobamos si el empleado ya está en ese proyecto
+	    if(empleado.getProyectos().contains(proyecto)) {
+	    	IO.println(Colores.ROJO + "No se puede añadir porque el empleado ya está en ese proyecto" + Colores.RESET);
+	    	return;
+	    }
+	    
+	    // Realizamos la operación
+	    IO.println(controller.addToProyecto(empleado, proyecto) ? "Se ha añadido correctamente el empleado al proyecto" : 
+        	Colores.ROJO + "No se ha podido añadir el empleado al proyecto" + Colores.RESET);
+	}
+	
+	/**
+	 * Método para eliminar un empleado de un proyecto.
+	 * 
+	 * @param controller
+	 */
+	private static void deleteFromProyecto(EmpresaController controller) {
+		// Obtenemos empleado que se quiere eliminar del proyecto
+	    UUID id_empleado = IO.readUUID("ID del Empleado ? ");
+	    Empleado empleado = controller.getEmpleadoById(id_empleado);
+	    
+	    // Obtenemos el proyecto del que se quiere eliminar el empleado
+	    UUID id_proyecto = IO.readUUID("ID del Proyecto ? ");
+	    Proyecto proyecto = controller.getProyectoById(id_proyecto);
+	    
+	    // Comprobamos si existen empleado y proyecto
+	    if(empleado == null || proyecto == null) {
+	    	IO.println(Colores.ROJO + "No se puede realizar la operación porque no existe empleado o proyecto" + Colores.RESET);
+	    	return;
+	    }
+	    
+	    // Comprobamos si el empleado no está en ese proyecto
+	    if(!empleado.getProyectos().contains(proyecto)) {
+	    	IO.println(Colores.ROJO + "No se puede eliminar porque el empleado no está en ese proyecto" + Colores.RESET);
+	    	return;
+	    }
+	    
+	    // Realizamos la operación
+	    IO.println(controller.deleteFromProyecto(empleado, proyecto) ? "Se ha eliminado correctamente el empleado del proyecto" : 
+        	Colores.ROJO + "No se ha podido eliminar el empleado del proyecto" + Colores.RESET);
 	}
 
 	/**

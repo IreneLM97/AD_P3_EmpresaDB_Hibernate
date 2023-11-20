@@ -73,6 +73,16 @@ public class EmpresaController {
         logger.info("Actualizando empleado con ID: " + empleado.getId());
         return empleadoDao.save(empleado);
     }
+    
+    public Boolean addToProyecto(Empleado empleado, Proyecto proyecto) {
+    	logger.info("Añadiendo empleado con ID: " + empleado.getId() + " a proyecto con ID: " + proyecto.getId());
+        return empleadoDao.addToProyecto(empleado, proyecto);
+    }
+    
+    public Boolean deleteFromProyecto(Empleado empleado, Proyecto proyecto) {
+    	logger.info("Eliminando empleado con ID: " + empleado.getId() + " de proyecto con ID: " + proyecto.getId());
+        return empleadoDao.deleteFromProyecto(empleado, proyecto);
+    }
 
     public Boolean deleteEmpleado(Empleado empleado) {
         logger.info("Eliminando empleado con ID: " + empleado.getId());

@@ -12,6 +12,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.PreRemove;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -34,11 +35,17 @@ public class Proyecto {
         this.nombre = builder.nombre;
         this.empleados = builder.empleados;
     }
+    
+    @PreRemove
+    public void eliminarEmpleados() {
+    	this.empleados.stream().forEach(empleado -> empleado.getProyectos().remove(this));
+    	this.empleados.clear();
+    }
 	
 	@Override
     public boolean equals(Object obj) {
         Proyecto proyecto = (Proyecto) obj;
-        return id.equals(proyecto.id);
+        return this.id.equals(proyecto.id);
     }
 	
 	@Override

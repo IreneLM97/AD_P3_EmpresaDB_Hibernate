@@ -37,7 +37,7 @@ public class Proyecto {
     }
     
     @PreRemove
-    public void eliminarEmpleados() {
+    public void eliminarDependencias() {
     	this.empleados.stream().forEach(empleado -> empleado.getProyectos().remove(this));
     	this.empleados.clear();
     }

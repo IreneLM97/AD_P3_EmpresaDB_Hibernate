@@ -36,7 +36,7 @@ public class Departamento {
     }
 	
 	@PreRemove
-	public void nullificarEmpleados() {
+	public void eliminarDependencias() {
 		empleados.forEach(empleado -> empleado.setDepartamento(null));
 	}
 	

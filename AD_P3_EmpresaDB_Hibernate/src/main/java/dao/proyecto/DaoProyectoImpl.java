@@ -10,6 +10,9 @@ import exceptions.ProyectoException;
 import jakarta.persistence.TypedQuery;
 import models.Proyecto;
 
+/**
+ * Clase que implementa los métodos necesarios para las operaciones CRUD de Proyecto.
+ */
 public class DaoProyectoImpl implements DaoProyecto{
 	private final Logger logger = Logger.getLogger(DaoProyectoImpl.class.getName());
 	

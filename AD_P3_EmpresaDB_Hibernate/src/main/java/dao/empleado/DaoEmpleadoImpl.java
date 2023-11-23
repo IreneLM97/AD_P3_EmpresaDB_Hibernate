@@ -11,6 +11,9 @@ import jakarta.persistence.TypedQuery;
 import models.Empleado;
 import models.Proyecto;
 
+/**
+ * Clase que implementa los métodos necesarios para las operaciones CRUD de Empleado.
+ */
 public class DaoEmpleadoImpl implements DaoEmpleado {
 	private final Logger logger = Logger.getLogger(DaoDepartamentoImpl.class.getName());
 	

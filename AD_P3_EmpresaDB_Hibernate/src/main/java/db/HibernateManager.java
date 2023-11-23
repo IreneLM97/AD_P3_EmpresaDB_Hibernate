@@ -7,9 +7,8 @@ import jakarta.persistence.Persistence;
 import lombok.Getter;
 
 /**
- * Controlador de Entidades de Hibernate JPA
+ * Controlador de Entidades de Hibernate JPA.
  */
-
 @Getter
 public class HibernateManager {
     private static HibernateManager controller;

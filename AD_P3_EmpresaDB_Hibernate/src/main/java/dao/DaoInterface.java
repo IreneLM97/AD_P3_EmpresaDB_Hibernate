@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Interfaz con los métodos necesarios para realizar operaciones CRUD sobre la base de datos.
  * 
- * @param <T> tipo de objeto genérico (representa Empleado o Departamento)
+ * @param <T> tipo de objeto genérico (representa Empleado, Departamento, Proyecto)
  */
 public interface DaoInterface<T> {
 	/**

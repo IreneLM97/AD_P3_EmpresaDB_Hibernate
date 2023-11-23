@@ -53,7 +53,6 @@ public class Departamento {
 	    result = prime * result + ((id == null) ? 0 : id.hashCode());
 	    result = prime * result + ((nombre == null) ? 0 : nombre.hashCode());
 	    return result;
-//		return Objects.hash(id, nombre, jefe, empleados);
 	}
 	
 	@Override

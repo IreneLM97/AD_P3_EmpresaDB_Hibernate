@@ -74,7 +74,7 @@ public class Proyecto {
 	 * Clase Builder para crear instancias de Proyecto.
 	 */
 	public static class Builder {
-	    private UUID id = UUID.randomUUID();
+	    private UUID id = UUID.randomUUID();  // inicializamos UUID
 	    private String nombre;
 	    private Set<Empleado> empleados = new HashSet<>();
 

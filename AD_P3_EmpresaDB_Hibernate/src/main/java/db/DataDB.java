@@ -6,6 +6,9 @@ import models.Departamento;
 import models.Empleado;
 import models.Proyecto;
 
+/**
+ * Clase para inicializar la base de datos con algunos registros.
+ */
 public final class DataDB {
     public static List<Departamento> getDepartamentoInit() {
         return List.of(

@@ -11,6 +11,9 @@ import jakarta.persistence.TypedQuery;
 import models.Departamento;
 import models.Empleado;
 
+/**
+ * Clase que implementa los métodos necesarios para las operaciones CRUD de Departamento.
+ */
 public class DaoDepartamentoImpl implements DaoDepartamento {
 	private final Logger logger = Logger.getLogger(DaoDepartamentoImpl.class.getName());
 	

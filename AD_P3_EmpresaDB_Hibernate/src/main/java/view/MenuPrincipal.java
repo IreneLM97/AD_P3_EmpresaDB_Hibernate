@@ -14,6 +14,9 @@ import db.HibernateManager;
 
 import java.util.logging.Logger;
 
+/**
+ * Clase para mostrar menú principal.
+ */
 @SuppressWarnings("unused")
 public class MenuPrincipal {
 	
@@ -60,6 +63,9 @@ public class MenuPrincipal {
 		}
 	}
 	
+	/**
+	 * Método para iniciar la base de datos.
+	 */
     private static void initDataBase() {
     	HibernateManager hb = HibernateManager.getInstance();
     	
@@ -72,6 +78,15 @@ public class MenuPrincipal {
         hb.close();
     }
 
+    /**
+     * Método para vaciar e iniciar la base de datos.
+     * 
+     * @param <T>
+     * @param entities
+     * @param deleteFunction
+     * @param initData
+     * @param createFunction
+     */
 	private static <T> void clearAndInitializeEntities(List<T> entities, Consumer<T> deleteFunction, List<T> initData, Consumer<T> createFunction) {
         entities.stream().forEach(deleteFunction);
         initData.forEach(createFunction);

@@ -13,6 +13,9 @@ import models.Departamento;
 import models.Empleado;
 import models.Proyecto;
 
+/**
+ * Clase para mostrar menú de Empleados.
+ */
 public class MenuEmpleados {
 	public static void mostrarMenu(EmpresaController controller) {
 

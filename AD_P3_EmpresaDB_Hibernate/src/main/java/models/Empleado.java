@@ -76,7 +76,6 @@ public class Empleado {
 	    result = prime * result + ((salario == null) ? 0 : salario.hashCode());
 	    result = prime * result + ((nacido == null) ? 0 : nacido.hashCode());
 	    return result;
-//		return Objects.hash(id, nombre, salario, nacido, departamento, proyectos);
 	}
 	
 	@Override

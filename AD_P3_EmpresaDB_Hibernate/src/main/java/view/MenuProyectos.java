@@ -10,6 +10,9 @@ import constantes.color.Colores;
 import controllers.EmpresaController;
 import models.Proyecto;
 
+/**
+ * Clase para mostrar menú de Proyectos.
+ */
 public class MenuProyectos {
 	public static void mostrarMenu(EmpresaController controller) {
 

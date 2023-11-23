@@ -16,7 +16,7 @@ import models.Proyecto;
 public class MenuProyectos {
 	public static void mostrarMenu(EmpresaController controller) {
 
-		List<String> opciones = List.of("\n ======|MENU DEPARTAMENTOS|=====\n", 
+		List<String> opciones = List.of("\n ========|MENU PROYECTOS|=======\n", 
 										"| 1.- Listar Proyecto		|\n",
 										"| 2.- Agregar Proyecto		|\n", 
 										"| 3.- Modificar Proyecto    	|\n",

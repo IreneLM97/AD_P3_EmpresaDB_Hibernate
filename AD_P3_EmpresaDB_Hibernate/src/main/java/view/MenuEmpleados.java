@@ -71,6 +71,7 @@ public class MenuEmpleados {
 		List<Empleado> empleados = controller.getEmpleados().stream()
                 .sorted(Comparator.comparing(Empleado::getNombre))
                 .collect(Collectors.toList());
+		
 		// Mostramos todos los empleados y sus proyectos
 		String format = "[ %-36s ][ %-20s ][ %-8s ][ %-12s ][ %-55s ][ %-55s ]";
 		System.out.println(String.format(format, "ID", "NOMBRE", "SALARIO", "NACIDO", "DEPARTAMENTO", "PROYECTOS"));

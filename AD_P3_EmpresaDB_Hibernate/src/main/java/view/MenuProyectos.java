@@ -59,6 +59,7 @@ public class MenuProyectos {
 		List<Proyecto> proyectos = controller.getProyectos().stream()
                 .sorted(Comparator.comparing(Proyecto::getNombre))
                 .collect(Collectors.toList());
+		
 		// Mostramos todos los proyectos y sus empleados
 		String format = "[ %-36s ][ %-20s ][ %-55s ]";
 		System.out.println(String.format(format, "ID", "NOMBRE", "EMPLEADOS"));

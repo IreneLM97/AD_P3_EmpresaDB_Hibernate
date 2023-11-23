@@ -84,7 +84,7 @@ public class Departamento {
          * @return Instancia del Builder
          */
 	    public Builder id(UUID id) {
-	        this.id = id; // Asigna el UUID proporcionado
+	        this.id = id; 
 	        return this;
 	    }
 

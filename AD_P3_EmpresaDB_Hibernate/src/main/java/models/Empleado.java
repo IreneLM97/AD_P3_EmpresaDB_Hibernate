@@ -21,163 +21,157 @@ import lombok.*;
 public class Empleado {
 
 	@Id
-    private UUID id;
-    private String nombre;
-    private Double salario;
-    private LocalDate nacido;
+	private UUID id;
+	private String nombre;
+	private Double salario;
+	private LocalDate nacido;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(name = "departamento_id", nullable = true)
-    private Departamento departamento;
+	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@JoinColumn(name = "departamento_id", nullable = true)
+	private Departamento departamento;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
-    @JoinTable(
-        name = "empleado_proyecto",
-        joinColumns = @JoinColumn(name = "empleado_id"),
-        inverseJoinColumns = @JoinColumn(name = "proyecto_id")
-    )
-    private Set<Proyecto> proyectos = new HashSet<>();
-	
-    /** Constructor privado para la clase Empleado que toma un Builder */
-    private Empleado(Builder builder) {
-        this.id = builder.id;
-        this.nombre = builder.nombre;
-        this.salario = builder.salario;
-        this.nacido = builder.nacido;
-        this.departamento = builder.departamento;
-        this.proyectos = builder.proyectos;
-    }
-	
-    /** Método que se ejecuta antes de eliminar un registro de Empleado */
-    @PreRemove
-	public void eliminarDependencias() {
-    	// eliminamos dependencias con relación con departamento
-    	if(this.departamento != null) {
-	    	departamento.getEmpleados().remove(this); // lo eliminamos de la lista de empleados de ese departamento
-			this.setDepartamento(null);
-    	}
-    	
-    	// eliminamos dependencias con relación con proyecto
-    	this.proyectos.stream().forEach(proyecto -> proyecto.getEmpleados().remove(this));
-    	this.proyectos.clear();
+	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER)
+	@JoinTable(name = "empleado_proyecto", joinColumns = @JoinColumn(name = "empleado_id"), inverseJoinColumns = @JoinColumn(name = "proyecto_id"))
+	private Set<Proyecto> proyectos = new HashSet<>();
+
+	/** Constructor privado para la clase Empleado que toma un Builder */
+	private Empleado(Builder builder) {
+		this.id = builder.id;
+		this.nombre = builder.nombre;
+		this.salario = builder.salario;
+		this.nacido = builder.nacido;
+		this.departamento = builder.departamento;
+		this.proyectos = builder.proyectos;
 	}
-    
+
+	/** Método que se ejecuta antes de eliminar un registro de Empleado */
+	@PreRemove
+	public void eliminarDependencias() {
+		// eliminamos dependencias con relación con departamento
+		if (this.departamento != null) {
+			departamento.getEmpleados().remove(this); // lo eliminamos de la lista de empleados de ese departamento
+			this.setDepartamento(null);
+		}
+
+		// eliminamos dependencias con relación con proyecto
+		this.proyectos.stream().forEach(proyecto -> proyecto.getEmpleados().remove(this));
+		this.proyectos.clear();
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		Empleado empleado = (Empleado) obj;
-        return this.id.equals(empleado.id);
-    }
-	
+		return this.id.equals(empleado.id);
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-	    int result = 1;
-	    result = prime * result + ((id == null) ? 0 : id.hashCode());
-	    result = prime * result + ((nombre == null) ? 0 : nombre.hashCode());
-	    result = prime * result + ((salario == null) ? 0 : salario.hashCode());
-	    result = prime * result + ((nacido == null) ? 0 : nacido.hashCode());
-	    return result;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((nombre == null) ? 0 : nombre.hashCode());
+		result = prime * result + ((salario == null) ? 0 : salario.hashCode());
+		result = prime * result + ((nacido == null) ? 0 : nacido.hashCode());
+		return result;
 	}
-	
+
 	@Override
 	public String toString() {
 		String format = "[ %-36s ][ %-20s ][ %-8s ][ %-12s ][ %-55s ][ %-55s ]";
-		String departamentoInfo = (departamento != null) ? departamento.getId() + " | " + departamento.getNombre() : "N/A";
-		
-		List<String> proyectosList = this.proyectos.stream()
-	            .map(proyecto -> proyecto.getNombre())
-	            .collect(Collectors.toList());
-	    String proyectosInfo = String.join(", ", proyectosList);
-	    
-	    return String.format(format, this.id.toString(), this.nombre, salario, nacido, departamentoInfo, proyectosInfo);
+		String departamentoInfo = (departamento != null) ? departamento.getId() + " | " + departamento.getNombre()
+				: "N/A";
+
+		List<String> proyectosList = this.proyectos.stream().map(proyecto -> proyecto.getNombre())
+				.collect(Collectors.toList());
+		String proyectosInfo = String.join(", ", proyectosList);
+
+		return String.format(format, this.id.toString(), this.nombre, salario, nacido, departamentoInfo, proyectosInfo);
 	}
-	
+
 	/**
-     * Clase Builder para crear instancias de Empleado.
-     */
-    public static class Builder {
-        private UUID id = UUID.randomUUID(); // inicializamos UUID
-        private String nombre;
-        private Double salario;
-        private LocalDate nacido;
-        private Departamento departamento;
-        private Set<Proyecto> proyectos = new HashSet<>();
+	 * Clase Builder para crear instancias de Empleado.
+	 */
+	public static class Builder {
+		private UUID id = UUID.randomUUID(); // inicializamos UUID
+		private String nombre;
+		private Double salario;
+		private LocalDate nacido;
+		private Departamento departamento;
+		private Set<Proyecto> proyectos = new HashSet<>();
 
-        /**
-         * Establece el ID para el Empleado que se está construyendo.
-         * 
-         * @param id ID a establecer para el Empleado
-         * @return Instancia del Builder
-         */
-        public Builder id(UUID id) {
-            this.id = id;
-            return this;
-        }
+		/**
+		 * Establece el ID para el Empleado que se está construyendo.
+		 * 
+		 * @param id ID a establecer para el Empleado
+		 * @return Instancia del Builder
+		 */
+		public Builder id(UUID id) {
+			this.id = id;
+			return this;
+		}
 
-        /**
-         * Establece el nombre para el Empleado que se está construyendo.
-         * 
-         * @param nombre Nombre a establecer para el Empleado
-         * @return Instancia del Builder
-         */
-        public Builder nombre(String nombre) {
-            this.nombre = nombre;
-            return this;
-        }
+		/**
+		 * Establece el nombre para el Empleado que se está construyendo.
+		 * 
+		 * @param nombre Nombre a establecer para el Empleado
+		 * @return Instancia del Builder
+		 */
+		public Builder nombre(String nombre) {
+			this.nombre = nombre;
+			return this;
+		}
 
-        /**
-         * Establece el salario para el Empleado que se está construyendo.
-         * 
-         * @param salario Salario a establecer para el Empleado
-         * @return Instancia del Builder
-         */
-        public Builder salario(Double salario) {
-            this.salario = salario;
-            return this;
-        }
+		/**
+		 * Establece el salario para el Empleado que se está construyendo.
+		 * 
+		 * @param salario Salario a establecer para el Empleado
+		 * @return Instancia del Builder
+		 */
+		public Builder salario(Double salario) {
+			this.salario = salario;
+			return this;
+		}
 
-        /**
-         * Establece la fecha de nacimiento para el Empleado que se está construyendo.
-         * 
-         * @param nacido Fecha de nacimiento a establecer para el Empleado
-         * @return Instancia del Builder
-         */
-        public Builder nacido(LocalDate nacido) {
-            this.nacido = nacido;
-            return this;
-        }
+		/**
+		 * Establece la fecha de nacimiento para el Empleado que se está construyendo.
+		 * 
+		 * @param nacido Fecha de nacimiento a establecer para el Empleado
+		 * @return Instancia del Builder
+		 */
+		public Builder nacido(LocalDate nacido) {
+			this.nacido = nacido;
+			return this;
+		}
 
-        /**
-         * Establece el departamento para el Empleado que se está construyendo.
-         * 
-         * @param departamento Departamento a establecer para el Empleado
-         * @return Instancia del Builder
-         */
-        public Builder departamento(Departamento departamento) {
-            this.departamento = departamento;
-            return this;
-        }
+		/**
+		 * Establece el departamento para el Empleado que se está construyendo.
+		 * 
+		 * @param departamento Departamento a establecer para el Empleado
+		 * @return Instancia del Builder
+		 */
+		public Builder departamento(Departamento departamento) {
+			this.departamento = departamento;
+			return this;
+		}
 
-        /**
-         * Establece los proyectos para el Empleado que se está construyendo.
-         * 
-         * @param proyectos Proyectos a establecer para el Empleado.
-         * @return Instancia del Builder
-         */
-        public Builder proyectos(Set<Proyecto> proyectos) {
-            this.proyectos = proyectos;
-            return this;
-        }
+		/**
+		 * Establece los proyectos para el Empleado que se está construyendo.
+		 * 
+		 * @param proyectos Proyectos a establecer para el Empleado.
+		 * @return Instancia del Builder
+		 */
+		public Builder proyectos(Set<Proyecto> proyectos) {
+			this.proyectos = proyectos;
+			return this;
+		}
 
-        /**
-         * Construye el Empleado con los atributos configurados.
-         * 
-         * @return Instancia construida de Empleado
-         */
-        public Empleado build() {
-            return new Empleado(this);
-        }
-    }
+		/**
+		 * Construye el Empleado con los atributos configurados.
+		 * 
+		 * @return Instancia construida de Empleado
+		 */
+		public Empleado build() {
+			return new Empleado(this);
+		}
+	}
 }
-
-

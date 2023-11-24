@@ -27,7 +27,7 @@ public class Departamento {
     @OneToMany(mappedBy = "departamento", orphanRemoval = false, cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     private Set<Empleado> empleados = new HashSet<>();
     
-    // Constructor privado para la clase Departamento que toma un Builder
+    /** Constructor privado para la clase Departamento que toma un Builder */
     private Departamento(Builder builder) {
         this.id = builder.id;
         this.nombre = builder.nombre;
@@ -35,9 +35,10 @@ public class Departamento {
         this.empleados = builder.empleados;
     }
 	
+    /** Método que se ejecuta antes de eliminar un registro de Departamento */
 	@PreRemove
 	public void eliminarDependencias() {
-		empleados.forEach(empleado -> empleado.setDepartamento(null));
+		empleados.forEach(empleado -> empleado.setDepartamento(null));  
 	}
 	
 	@Override

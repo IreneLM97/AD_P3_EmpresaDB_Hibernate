@@ -29,13 +29,14 @@ public class Proyecto {
     @ManyToMany(mappedBy = "proyectos", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     private Set<Empleado> empleados = new HashSet<>();
 	
-    // Constructor privado para la clase Proyecto que toma un Builder
+    /** Constructor privado para la clase Proyecto que toma un Builder */
     private Proyecto(Builder builder) {
         this.id = builder.id;
         this.nombre = builder.nombre;
         this.empleados = builder.empleados;
     }
     
+    /** Método que se ejecuta antes de eliminar un registro de Proyecto */
     @PreRemove
     public void eliminarDependencias() {
     	this.empleados.stream().forEach(empleado -> empleado.getProyectos().remove(this));

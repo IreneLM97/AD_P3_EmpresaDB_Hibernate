@@ -38,7 +38,7 @@ public class Empleado {
     )
     private Set<Proyecto> proyectos = new HashSet<>();
 	
-    // Constructor privado para la clase Empleado que toma un Builder
+    /** Constructor privado para la clase Empleado que toma un Builder */
     private Empleado(Builder builder) {
         this.id = builder.id;
         this.nombre = builder.nombre;
@@ -48,6 +48,7 @@ public class Empleado {
         this.proyectos = builder.proyectos;
     }
 	
+    /** Método que se ejecuta antes de eliminar un registro de Empleado */
     @PreRemove
 	public void eliminarDependencias() {
     	// eliminamos dependencias con relación con departamento

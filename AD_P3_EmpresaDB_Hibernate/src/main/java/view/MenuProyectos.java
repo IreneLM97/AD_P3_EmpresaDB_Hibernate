@@ -16,13 +16,10 @@ import models.Proyecto;
 public class MenuProyectos {
 	public static void mostrarMenu(EmpresaController controller) {
 
-		List<String> opciones = List.of("\n ========|MENU PROYECTOS|=======\n", 
-										"| 1.- Listar Proyecto		|\n",
-										"| 2.- Agregar Proyecto		|\n", 
-										"| 3.- Modificar Proyecto    	|\n",
-										"| 4.- Eliminar Proyecto     	|\n", 
-										"| 5.- Volver al menu principal  |\n",
-										" ===============================\n");
+		List<String> opciones = List.of("\n ========|MENU PROYECTOS|=======\n", "| 1.- Listar Proyecto		|\n",
+				"| 2.- Agregar Proyecto		|\n", "| 3.- Modificar Proyecto    	|\n",
+				"| 4.- Eliminar Proyecto     	|\n", "| 5.- Volver al menu principal  |\n",
+				" ===============================\n");
 
 		while (true) {
 			opciones.stream().forEach(System.out::print);
@@ -56,14 +53,13 @@ public class MenuProyectos {
 	 */
 	private static void listarProyectos(EmpresaController controller) {
 		// Obtenemos todos los proyectos
-		List<Proyecto> proyectos = controller.getProyectos().stream()
-                .sorted(Comparator.comparing(Proyecto::getNombre))
-                .collect(Collectors.toList());
-		
+		List<Proyecto> proyectos = controller.getProyectos().stream().sorted(Comparator.comparing(Proyecto::getNombre))
+				.collect(Collectors.toList());
+
 		// Mostramos todos los proyectos y sus empleados
 		String format = "[ %-36s ][ %-20s ][ %-55s ]";
 		System.out.println(String.format(format, "ID", "NOMBRE", "EMPLEADOS"));
-        proyectos.forEach(System.out::println);
+		proyectos.forEach(System.out::println);
 	}
 
 	/**
@@ -77,16 +73,15 @@ public class MenuProyectos {
 
 		// Creamos el proyecto
 		Proyecto proyecto = new Proyecto.Builder().nombre(nombre).build();
-				
+
 		// Comprobamos si se ha insertado el registro y damos feedback
-		IO.println(controller.createProyecto(proyecto) ? "Insertado correctamente" :
-				Colores.ROJO 
-				+ "No se ha encontrado un proyecto con el ID introducido" 
-				+ Colores.RESET);
+		IO.println(controller.createProyecto(proyecto) ? "Insertado correctamente"
+				: Colores.ROJO + "No se ha encontrado un proyecto con el ID introducido" + Colores.RESET);
 	}
 
 	/**
-	 * Método para solicitar campos de un proyecto y actualizarlo en la base de datos.
+	 * Método para solicitar campos de un proyecto y actualizarlo en la base de
+	 * datos.
 	 * 
 	 * @param controller
 	 */
@@ -94,20 +89,20 @@ public class MenuProyectos {
 		// Obtenemos proyecto que se quiere actualizar
 		UUID id = IO.readUUID("ID ? ");
 		Proyecto proyecto = controller.getProyectoById(id);
-		
+
 		// Comprobamos si existe ese proyecto y pedimos el resto de datos
-		if(proyecto != null) {
+		if (proyecto != null) {
 			String nombre = IO.readStringOptional("Nombre ? ");
 			nombre = (nombre.isEmpty()) ? proyecto.getNombre() : nombre;
 
 			// Actualizamos el proyecto
 			proyecto.setNombre(nombre);
 
-	        IO.println(controller.updateProyecto(proyecto) ? "Actualizado correctamente" : 
-	        	Colores.ROJO + "No se ha podido actualizar el proyecto" + Colores.RESET);
-	    } else {
-	        IO.println(Colores.ROJO + "No se ha encontrado un proyecto con el ID introducido" + Colores.RESET);
-	    }
+			IO.println(controller.updateProyecto(proyecto) ? "Actualizado correctamente"
+					: Colores.ROJO + "No se ha podido actualizar el proyecto" + Colores.RESET);
+		} else {
+			IO.println(Colores.ROJO + "No se ha encontrado un proyecto con el ID introducido" + Colores.RESET);
+		}
 	}
 
 	/**
@@ -119,16 +114,16 @@ public class MenuProyectos {
 		// Obtenemos el proyecto a eliminar
 		UUID id = IO.readUUID("ID ? ");
 		Proyecto proyecto = controller.getProyectoById(id);
-		
+
 		// proyecto existe
-	    if (proyecto != null) {  
-	        boolean eliminado = controller.deleteProyecto(proyecto);
-	        IO.println(eliminado ? "Proyecto eliminado correctamente" :
-	                Colores.ROJO + "No se ha podido eliminar el proyecto" + Colores.RESET);
-	        
-	    // proyecto no existe   
-	    } else {  
-	        IO.println(Colores.ROJO + "No se ha encontrado un proyecto con el ID introducido" + Colores.RESET);
-	    }
+		if (proyecto != null) {
+			boolean eliminado = controller.deleteProyecto(proyecto);
+			IO.println(eliminado ? "Proyecto eliminado correctamente"
+					: Colores.ROJO + "No se ha podido eliminar el proyecto" + Colores.RESET);
+
+			// proyecto no existe
+		} else {
+			IO.println(Colores.ROJO + "No se ha encontrado un proyecto con el ID introducido" + Colores.RESET);
+		}
 	}
 }

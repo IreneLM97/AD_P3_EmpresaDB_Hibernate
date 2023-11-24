@@ -32,9 +32,13 @@ public class MenuPrincipal {
 		// Iniciamos la base de datos
 		initDataBase();
 
-		List<String> opciones = List.of("\n ========|MENU PRINCIPAL|========\n", "| 1.- Gestionar Departamentos	 |\n",
-				"| 2.- Gestionar Empleados        |\n", "| 3.- Gestionar Proyectos        |\n",
-				"| 4.- Salir			 |\n", " ================================\n");
+		List<String> opciones = List.of(
+				"\n ========|MENU PRINCIPAL|========\n", 
+				"| 1.- Gestionar Departamentos	 |\n",
+				"| 2.- Gestionar Empleados        |\n", 
+				"| 3.- Gestionar Proyectos        |\n",
+				"| 4.- Salir			 |\n", 
+				" ================================\n");
 
 		while (true) {
 			opciones.stream().forEach(System.out::print);

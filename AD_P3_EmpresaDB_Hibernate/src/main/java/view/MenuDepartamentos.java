@@ -17,9 +17,13 @@ import models.Empleado;
 public class MenuDepartamentos {
 	public static void mostrarMenu(EmpresaController controller) {
 
-		List<String> opciones = List.of("\n ======|MENU DEPARTAMENTOS|=====\n", "| 1.- Listar Departamentos	|\n",
-				"| 2.- Agregar Departamento	|\n", "| 3.- Modificar Departamento    |\n",
-				"| 4.- Eliminar Departamento     |\n", "| 5.- Volver al menu principal  |\n",
+		List<String> opciones = List.of(
+				"\n ======|MENU DEPARTAMENTOS|=====\n", 
+				"| 1.- Listar Departamentos	|\n",
+				"| 2.- Agregar Departamento	|\n", 
+				"| 3.- Modificar Departamento    |\n",
+				"| 4.- Eliminar Departamento     |\n", 
+				"| 5.- Volver al menu principal  |\n",
 				" ===============================\n");
 
 		while (true) {

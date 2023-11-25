@@ -7,7 +7,9 @@ import java.util.logging.Logger;
 import dao.departamento.DaoDepartamentoImpl;
 import db.HibernateManager;
 import exceptions.EmpleadoException;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
+import models.Departamento;
 import models.Empleado;
 import models.Proyecto;
 
@@ -47,9 +49,18 @@ public class DaoEmpleadoImpl implements DaoEmpleado {
 		logger.info("save()");
         HibernateManager hb = HibernateManager.getInstance();
         hb.open();
-        hb.getTransaction().begin();
 
         try {
+        	Departamento departamento = entity.getDepartamento();
+	        if (departamento != null) {
+	            // Actualizamos el departamento que tuviese a ese jefe como jefe para setearlo a null
+	            if (!nullificarJefeDepartamento(departamento, entity, hb)) {
+	                return false;
+	            }
+	        }
+	        
+	        // Guardar o actualizar el empleado
+	        hb.getTransaction().begin();
             hb.getManager().merge(entity);
             hb.getTransaction().commit();
             hb.close();
@@ -143,5 +154,44 @@ public class DaoEmpleadoImpl implements DaoEmpleado {
                 hb.getTransaction().rollback();
             }
         }
+	}
+	
+	/**
+	 * Método privado para actualizar a null el jefe en el departamento que tenga a jefe como jefe y no sean el departamento dado.
+	 * 
+	 * @param departamento 
+	 * @param jefe
+	 * @param hb hibernate manager
+	 * @return true si se puede actualizar, false en caso contrario
+	 */
+	private boolean nullificarJefeDepartamento(Departamento departamento, Empleado jefe, HibernateManager hb) {
+	    // Nueva transacción para la lógica específica de actualizar jefe de departamento
+	    hb.getTransaction().begin();
+
+	    try {
+	        // Buscamos al departamento en el contexto de persistencia para tener una instancia gestionada
+	        Departamento departamentoPersistido = hb.getManager().find(Departamento.class, departamento.getId());
+	        if (departamentoPersistido != null) {
+	            // Buscamos el departamento que tuviese como jefe a ese jefe
+	            TypedQuery<Departamento> query = hb.getManager().createQuery(
+	                    "SELECT d FROM departamento d WHERE d.jefe.id = :jefe_id AND d.id != :dpto_id", Departamento.class);
+	            query.setParameter("jefe_id", jefe.getId());
+	            query.setParameter("dpto_id", departamentoPersistido.getId());
+	            query.getSingleResult().setJefe(null);
+	        }
+
+	        // Commit de la transacción específica
+	        hb.getTransaction().commit();
+	        return true;
+	    } catch (NoResultException e) {
+	    	return true;
+	    } catch (Exception e) {
+	        logger.warning("Problemas al actualizar jefe del departamento a null " + e.getMessage());
+	        return false;
+	    } finally {
+	    	if (hb.getTransaction().isActive()) {
+	            hb.getTransaction().rollback();
+	        }
+	    }
 	}
 }

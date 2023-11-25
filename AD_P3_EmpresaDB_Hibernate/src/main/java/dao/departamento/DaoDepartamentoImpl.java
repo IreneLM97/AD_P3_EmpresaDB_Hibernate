@@ -101,15 +101,15 @@ public class DaoDepartamentoImpl implements DaoDepartamento {
 	}
 	
 	/**
-	 * Método privado para actualizar a null el jefe de los departamentos que tuviese asociado ese jefe al añadirlo como jefe de un nuevo departamento.
+	 * Método privado para actualizar a null el jefe en el departamento que tenga a jefe como jefe y no sean el departamento dado.
 	 * 
-	 * @param entity departamento que se quiere asignar el jefe
-	 * @param jefe empleado que se asigna como jefe y se setea a null en el resto de departamentos
+	 * @param departamento 
+	 * @param jefe
 	 * @param hb hibernate manager
 	 * @return true si se puede actualizar, false en caso contrario
 	 */
-	private boolean nullificarJefeDepartamento(Departamento entity, Empleado jefe, HibernateManager hb) {
-	    // Nueva transacción para la lógica específica de actualizar departamentos del jefe
+	private boolean nullificarJefeDepartamento(Departamento departamento, Empleado jefe, HibernateManager hb) {
+		// Nueva transacción para la lógica específica de actualizar jefe de departamento
 	    hb.getTransaction().begin();
 
 	    try {
@@ -120,7 +120,7 @@ public class DaoDepartamentoImpl implements DaoDepartamento {
 	            TypedQuery<Departamento> query = hb.getManager().createQuery(
 	                    "SELECT d FROM departamento d WHERE d.jefe.id = :jefe_id AND d.id != :dpto_id", Departamento.class);
 	            query.setParameter("jefe_id", jefePersistido.getId());
-	            query.setParameter("dpto_id", entity.getId());
+	            query.setParameter("dpto_id", departamento.getId());
 	            query.getSingleResult().setJefe(null);
 	        }
 

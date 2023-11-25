@@ -42,7 +42,7 @@ public class Empleado {
 		if (this.departamento != null) {
 			departamento.getEmpleados().remove(this); // lo eliminamos de la lista de empleados de ese departamento
 		
-			if(departamento.getJefe().getId() == this.id) { // comprobamos si es jefe del departamento
+			if(departamento.getJefe() != null && departamento.getJefe().getId() == this.id) { // comprobamos si es jefe del departamento
 				departamento.setJefe(null);
 			}
 			

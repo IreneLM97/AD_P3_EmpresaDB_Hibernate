@@ -7,12 +7,11 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-//import org.hibernate.annotations.UuidGenerator;
-
 import jakarta.persistence.*;
 import lombok.*;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "empleado")
@@ -21,7 +20,8 @@ import lombok.*;
 public class Empleado {
 
 	@Id
-	private UUID id;
+	@Builder.Default
+	private UUID id = UUID.randomUUID();
 	private String nombre;
 	private Double salario;
 	private LocalDate nacido;
@@ -32,17 +32,8 @@ public class Empleado {
 
 	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER)
 	@JoinTable(name = "empleado_proyecto", joinColumns = @JoinColumn(name = "empleado_id"), inverseJoinColumns = @JoinColumn(name = "proyecto_id"))
+	@Builder.Default
 	private Set<Proyecto> proyectos = new HashSet<>();
-
-	/** Constructor privado para la clase Empleado que toma un Builder */
-	private Empleado(Builder builder) {
-		this.id = builder.id;
-		this.nombre = builder.nombre;
-		this.salario = builder.salario;
-		this.nacido = builder.nacido;
-		this.departamento = builder.departamento;
-		this.proyectos = builder.proyectos;
-	}
 
 	/** Método que se ejecuta antes de eliminar un registro de Empleado */
 	@PreRemove
@@ -50,7 +41,12 @@ public class Empleado {
 		// eliminamos dependencias con relación con departamento
 		if (this.departamento != null) {
 			departamento.getEmpleados().remove(this); // lo eliminamos de la lista de empleados de ese departamento
-			this.setDepartamento(null);
+		
+			if(departamento.getJefe().getId() == this.id) { // comprobamos si es jefe del departamento
+				departamento.setJefe(null);
+			}
+			
+			this.setDepartamento(null);  // seteamos su departamento a null
 		}
 
 		// eliminamos dependencias con relación con proyecto
@@ -86,92 +82,5 @@ public class Empleado {
 		String proyectosInfo = String.join(", ", proyectosList);
 
 		return String.format(format, this.id.toString(), this.nombre, salario, nacido, departamentoInfo, proyectosInfo);
-	}
-
-	/**
-	 * Clase Builder para crear instancias de Empleado.
-	 */
-	public static class Builder {
-		private UUID id = UUID.randomUUID(); // inicializamos UUID
-		private String nombre;
-		private Double salario;
-		private LocalDate nacido;
-		private Departamento departamento;
-		private Set<Proyecto> proyectos = new HashSet<>();
-
-		/**
-		 * Establece el ID para el Empleado que se está construyendo.
-		 * 
-		 * @param id ID a establecer para el Empleado
-		 * @return Instancia del Builder
-		 */
-		public Builder id(UUID id) {
-			this.id = id;
-			return this;
-		}
-
-		/**
-		 * Establece el nombre para el Empleado que se está construyendo.
-		 * 
-		 * @param nombre Nombre a establecer para el Empleado
-		 * @return Instancia del Builder
-		 */
-		public Builder nombre(String nombre) {
-			this.nombre = nombre;
-			return this;
-		}
-
-		/**
-		 * Establece el salario para el Empleado que se está construyendo.
-		 * 
-		 * @param salario Salario a establecer para el Empleado
-		 * @return Instancia del Builder
-		 */
-		public Builder salario(Double salario) {
-			this.salario = salario;
-			return this;
-		}
-
-		/**
-		 * Establece la fecha de nacimiento para el Empleado que se está construyendo.
-		 * 
-		 * @param nacido Fecha de nacimiento a establecer para el Empleado
-		 * @return Instancia del Builder
-		 */
-		public Builder nacido(LocalDate nacido) {
-			this.nacido = nacido;
-			return this;
-		}
-
-		/**
-		 * Establece el departamento para el Empleado que se está construyendo.
-		 * 
-		 * @param departamento Departamento a establecer para el Empleado
-		 * @return Instancia del Builder
-		 */
-		public Builder departamento(Departamento departamento) {
-			this.departamento = departamento;
-			return this;
-		}
-
-		/**
-		 * Establece los proyectos para el Empleado que se está construyendo.
-		 * 
-		 * @param proyectos Proyectos a establecer para el Empleado.
-		 * @return Instancia del Builder
-		 */
-		public Builder proyectos(Set<Proyecto> proyectos) {
-			this.proyectos = proyectos;
-			return this;
-		}
-
-		/**
-		 * Construye el Empleado con los atributos configurados.
-		 * 
-		 * @return Instancia construida de Empleado
-		 */
-		public Empleado build() {
-			return new Empleado(this);
-		}
 	}
 }

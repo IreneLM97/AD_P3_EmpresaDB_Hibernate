@@ -10,6 +10,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "departamento")
@@ -17,7 +18,8 @@ import lombok.*;
 public class Departamento {
 
 	@Id
-	private UUID id;
+	@Builder.Default
+	private UUID id = UUID.randomUUID();
 	private String nombre;
 
 	@OneToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
@@ -25,15 +27,8 @@ public class Departamento {
 	private Empleado jefe;
 
 	@OneToMany(mappedBy = "departamento", orphanRemoval = false, cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+	@Builder.Default
 	private Set<Empleado> empleados = new HashSet<>();
-
-	/** Constructor privado para la clase Departamento que toma un Builder */
-	private Departamento(Builder builder) {
-		this.id = builder.id;
-		this.nombre = builder.nombre;
-		this.jefe = builder.jefe;
-		this.empleados = builder.empleados;
-	}
 
 	/** Método que se ejecuta antes de eliminar un registro de Departamento */
 	@PreRemove
@@ -66,68 +61,5 @@ public class Departamento {
 		String empleadosInfo = String.join(", ", empleadosList);
 
 		return String.format(format, this.id.toString(), this.nombre, jefeInfo, empleadosInfo);
-	}
-
-	/**
-	 * Clase Builder para crear instancias de Departamento.
-	 */
-	public static class Builder {
-		private UUID id = UUID.randomUUID(); // inicializamos UUID
-		private String nombre;
-		private Empleado jefe;
-		private Set<Empleado> empleados = new HashSet<>();
-
-		/**
-		 * Establece el ID para el Departamento que se está construyendo.
-		 * 
-		 * @param id ID a establecer para el Departamento
-		 * @return Instancia del Builder
-		 */
-		public Builder id(UUID id) {
-			this.id = id;
-			return this;
-		}
-
-		/**
-		 * Establece el nombre para el Departamento que se está construyendo.
-		 * 
-		 * @param nombre Nombre a establecer para el Departamento
-		 * @return Instancia del Builder
-		 */
-		public Builder nombre(String nombre) {
-			this.nombre = nombre;
-			return this;
-		}
-
-		/**
-		 * Establece el jefe para el Departamento que se está construyendo.
-		 * 
-		 * @param jefe Jefe a establecer para el Departamento
-		 * @return Instancia del Builder
-		 */
-		public Builder jefe(Empleado jefe) {
-			this.jefe = jefe;
-			return this;
-		}
-
-		/**
-		 * Establece los empleados para el Departamento que se está construyendo.
-		 * 
-		 * @param empleados Empleados a establecer para el Departamento
-		 * @return Instancia del Builder
-		 */
-		public Builder empleados(Set<Empleado> empleados) {
-			this.empleados = empleados;
-			return this;
-		}
-
-		/**
-		 * Construye el Departamento con los atributos configurados.
-		 * 
-		 * @return Instancia construida de Departamento
-		 */
-		public Departamento build() {
-			return new Departamento(this);
-		}
 	}
 }

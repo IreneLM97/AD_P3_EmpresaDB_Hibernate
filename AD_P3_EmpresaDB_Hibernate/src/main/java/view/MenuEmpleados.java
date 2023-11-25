@@ -97,7 +97,7 @@ public class MenuEmpleados {
 		}
 				
 		// Creamos el empleado
-		Empleado empleado = new Empleado.Builder().nombre(nombre).salario(salario).nacido(nacido).build();
+		Empleado empleado = Empleado.builder().nombre(nombre).salario(salario).nacido(nacido).build();
 		if(departamento != null) empleado.setDepartamento(controller.getDepartamentoById(departamento));
 						
 		// Comprobamos si se ha insertado el registro y damos feedback

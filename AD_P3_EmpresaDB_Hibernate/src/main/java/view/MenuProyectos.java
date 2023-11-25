@@ -76,7 +76,7 @@ public class MenuProyectos {
 		String nombre = IO.readString("Nombre ? ");
 
 		// Creamos el proyecto
-		Proyecto proyecto = new Proyecto.Builder().nombre(nombre).build();
+		Proyecto proyecto = Proyecto.builder().nombre(nombre).build();
 
 		// Comprobamos si se ha insertado el registro y damos feedback
 		IO.println(controller.createProyecto(proyecto) ? "Insertado correctamente"

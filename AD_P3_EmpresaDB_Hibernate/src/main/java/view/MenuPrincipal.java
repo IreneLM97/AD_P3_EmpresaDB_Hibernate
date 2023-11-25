@@ -49,7 +49,7 @@ public class MenuPrincipal {
 			case 2: // menú empleados
 				MenuEmpleados.mostrarMenu(controller);
 				break;
-			case 3: // salir del menú
+			case 3: // menú proyectos
 				MenuProyectos.mostrarMenu(controller);
 				break;
 			case 4: // salir del menú

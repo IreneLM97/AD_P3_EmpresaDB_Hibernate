@@ -1,10 +1,9 @@
-package dao.empleado;
+package repositories.empleado;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-import dao.departamento.DaoDepartamentoImpl;
 import db.HibernateManager;
 import exceptions.EmpleadoException;
 import jakarta.persistence.NoResultException;
@@ -12,6 +11,7 @@ import jakarta.persistence.TypedQuery;
 import models.Departamento;
 import models.Empleado;
 import models.Proyecto;
+import repositories.departamento.DaoDepartamentoImpl;
 
 /**
  * Clase que implementa los métodos necesarios para las operaciones CRUD de Empleado.

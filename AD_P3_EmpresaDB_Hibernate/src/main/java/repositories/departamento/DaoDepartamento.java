@@ -1,9 +1,9 @@
-package dao.departamento;
+package repositories.departamento;
 
 import java.util.UUID;
 
-import dao.DaoInterface;
 import models.Departamento;
+import repositories.DaoInterface;
 
 public interface DaoDepartamento extends DaoInterface<Departamento> {
 

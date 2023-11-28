@@ -1,4 +1,4 @@
-package dao.proyecto;
+package repositories.proyecto;
 
 import java.util.List;
 import java.util.UUID;

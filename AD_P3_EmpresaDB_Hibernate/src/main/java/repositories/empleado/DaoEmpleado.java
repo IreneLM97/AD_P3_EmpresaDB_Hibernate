@@ -1,10 +1,10 @@
-package dao.empleado;
+package repositories.empleado;
 
 import java.util.UUID;
 
-import dao.DaoInterface;
 import models.Empleado;
 import models.Proyecto;
+import repositories.DaoInterface;
 
 public interface DaoEmpleado extends DaoInterface<Empleado> {
 

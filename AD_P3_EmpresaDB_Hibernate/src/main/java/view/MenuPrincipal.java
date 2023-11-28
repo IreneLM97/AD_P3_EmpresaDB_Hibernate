@@ -6,11 +6,11 @@ import java.util.function.Consumer;
 import IO.IO;
 import constantes.color.Colores;
 import controllers.EmpresaController;
-import dao.departamento.DaoDepartamentoImpl;
-import dao.empleado.DaoEmpleadoImpl;
-import dao.proyecto.DaoProyectoImpl;
 import db.DataDB;
 import db.HibernateManager;
+import repositories.departamento.DaoDepartamentoImpl;
+import repositories.empleado.DaoEmpleadoImpl;
+import repositories.proyecto.DaoProyectoImpl;
 
 import java.util.logging.Logger;
 

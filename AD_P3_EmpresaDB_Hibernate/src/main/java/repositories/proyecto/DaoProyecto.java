@@ -1,9 +1,9 @@
-package dao.proyecto;
+package repositories.proyecto;
 
 import java.util.UUID;
 
-import dao.DaoInterface;
 import models.Proyecto;
+import repositories.DaoInterface;
 
 public interface DaoProyecto extends DaoInterface<Proyecto> {
 

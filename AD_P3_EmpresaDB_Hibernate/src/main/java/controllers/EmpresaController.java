@@ -3,9 +3,9 @@ package controllers;
 import models.Departamento;
 import models.Empleado;
 import models.Proyecto;
-import dao.departamento.DaoDepartamento;
-import dao.empleado.DaoEmpleado;
-import dao.proyecto.DaoProyecto;
+import repositories.departamento.DaoDepartamento;
+import repositories.empleado.DaoEmpleado;
+import repositories.proyecto.DaoProyecto;
 
 import java.util.List;
 import java.util.UUID;

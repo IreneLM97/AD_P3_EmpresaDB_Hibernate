@@ -1,4 +1,4 @@
- package dao.departamento;
+ package repositories.departamento;
 
 import java.util.List;
 import java.util.UUID;
